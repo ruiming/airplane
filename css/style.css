@@ -1,0 +1,132 @@
+body {
+	margin: 0; 
+	padding: 0; 
+	background: #000;
+}
+#box { 
+	width: 600px;
+	height: 800px;
+	margin: 10px auto; 
+	overflow: hidden; 
+	position: relative; 
+	border: 15px solid #f0f0f0; 
+	background-image: url('../images/bg.jpg');
+	background-position: 0 0;
+	background-repeat: repeat-y;
+	animation: animatedBackground 8s linear infinite;
+}
+@keyframes animatedBackground {
+	from { background-position: 0 0; }
+	to { background-position: 0 -100%; }
+}
+#box .title {
+	z-index: 1;
+	color: #fff;
+	text-align: center;
+	font-size: 24px;
+	margin-top: 150px;
+}
+#box .difficulty {
+	width: 300px;
+	z-index: 1;
+	text-align: center;
+	margin: 60px auto;
+}
+#box .difficulty a { 
+	width: 180px; 
+	height: 30px; 
+	line-height: 30px; 
+	text-align: center; 
+	display: block; 
+	margin: 20px auto 0 auto; 
+	background: #f0f0f0; 
+	color: #333; 
+	text-decoration: none;
+}
+#box .difficulty a:hover { 
+	background: #900; 
+	color: #fff;
+}
+#box .bg img { 
+	display: block;
+}
+#box .warcraft { 
+	width: 40px;
+	height: 60px;
+	position: absolute; 
+	left: 120px;  
+	top: 500px;
+	z-index: 3;
+}
+#box .warcraft img {
+	width: 40px;
+}
+#box .bullet { 
+	width: 6px; 
+	height: 22px; 
+	background: url('../img/bullet.png'); 
+	position: absolute; 
+	z-index: 2
+}
+#box .enemy { 
+	width:30px;
+	height:30px;
+	position: absolute; 
+	z-index: 3
+}
+#box .score { 
+	width: 220px; 
+	height: 30px; 
+	line-height: 30px; 
+	position: absolute; 
+	color: #fff; 
+	font-weight: bold; 
+	padding-left: 5px; 
+	font-size: 16px; 
+	z-index: 5;
+}
+#box .tips {
+	overflow: hidden;
+	width: 300px;
+	height: 250px;
+	line-height: 20px;
+	padding: 10px;
+	margin: 150px 140px;
+	background: #f0f0f0;
+}
+#box .tips .type { 
+	width: 160px; 
+	padding: 2px 15px; 
+	height: 30px; 
+	line-height: 30px; 
+	text-align: center; 
+	color: red; 
+	font-weight: bold;
+}
+#box .tips p {
+	width: 160px;
+	height: 40px;
+	font-size: 32px; 
+	line-height: 40px; 
+	text-align: center; 
+	cursor: pointer;  
+	background: #333; 
+	color: #fff; 
+	margin: 20px auto 0 auto;
+}
+#box .tips span{
+	font-size: 24px;
+	margin: 25px 0;
+	text-align: center;
+	width: 100%;
+	display: inline-block;
+}
+#description {
+	margin: 0 auto;
+	width: 500px;
+	font-size: 14px;
+}
+#softwhy a {
+	text-decoration: underline;
+	color: red;
+}

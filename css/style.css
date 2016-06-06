@@ -61,11 +61,18 @@ body {
 #box .warcraft img {
 	width: 40px;
 }
-#box .bullet { 
+#box .bullet {
 	width: 6px; 
 	height: 22px; 
 	background: url('../img/bullet.png'); 
 	position: absolute; 
+	z-index: 2
+}
+#box .enemyBullet {
+	width: 6px;
+	height: 22px;
+	background: url('../img/bullet2.png');
+	position: absolute;
 	z-index: 2
 }
 #box .enemy { 

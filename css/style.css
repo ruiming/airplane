@@ -13,11 +13,11 @@ body {
 	background-image: url('../images/bg.jpg');
 	background-position: 0 0;
 	background-repeat: repeat-y;
-	animation: animatedBackground 8s linear infinite;
+	animation: animatedBackground 3600s linear infinite;
 }
 @keyframes animatedBackground {
 	from { background-position: 0 0; }
-	to { background-position: 0 -100%; }
+	to { background-position: 0 -100000%; }
 }
 #box .title {
 	z-index: 1;
@@ -129,6 +129,7 @@ body {
 	margin: 150px 140px;
 	background: #f0f0f0;
 	text-align: center;
+	z-index: 9999;
 }
 #box .tips .type { 
 	width: 160px; 

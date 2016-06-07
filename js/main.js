@@ -80,7 +80,7 @@ var startScreen = {
 		game.append(title);
 
 		game.append(list);
-		
+
 		var difficulty;
 
 		if(localStorage["name"] != undefined){
@@ -248,14 +248,14 @@ var core = {
 
 		game.append(enemyBullet);
 		enemyBullet.stop().animate(
-			{top: 1500},
-			speed/2,
+			{top: 3000},
+			speed/2.5,
 			function() {
 				enemyBullet.remove();
 				clearInterval(oEnemy.bulletTimer);
 			}
 		)
-		}, 1500);
+		}, 1400);
 
 		// 碰撞检测
 		oEnemy.timer = setInterval(function() {

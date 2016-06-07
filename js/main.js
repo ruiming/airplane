@@ -16,10 +16,9 @@ var game = {
 	modetxt : "",
 	
 	timer : {
-		bg : null,
 		bullet : null,
 		enemy : null,
-		hp: 3
+		hp: null
 	},
 	//子弹速度set[1]，子弹延迟set[2], 敌机速度set[3]到set[4]之间，敌机产生间距set[5], HP set[6]
 	mode : [
@@ -57,7 +56,7 @@ var game = {
 				title.addClass("title");
 				title.html("打飞机 1.0 Javascript版");
 				game.stage.append(title);
-
+			game.timer.hp = 3;
 			var difficulty = $("<div class='difficulty'><a href='javascript:void(0)'>开始游戏</a></div>");
 				game.stage.append(difficulty);
 
@@ -227,7 +226,7 @@ var game = {
 					var bx3 = Math.abs( parseInt($(".warcraft").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 12),
 						by3 = Math.abs( parseInt($(".warcraft").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
 					if( bx3 <= 14 &&  by3 <= 20 ) {
-						if(game.timer.hp == 1){
+						if(game.timer.hp <= 1){
 							game.timer.hp--;
 							game.core.hp(game.timer.hp);
 							$(".hp").remove();
@@ -250,7 +249,6 @@ var game = {
 							clearInterval(game.timer.bullet);
 							clearInterval(oEnemy.bulletTimer);
 							clearInterval(game.timer.enemy);
-							clearInterval(game.timer.bg);
 							setTimeout( function () {
 								game.stage.append(tips);
 							},3000)
@@ -273,7 +271,7 @@ var game = {
 				var bx2 = Math.abs( x - parseInt($(".warcraft").css("left")) - 30),
 					by2 = Math.abs( y - parseInt($(".warcraft").css("top")) - 18);
 				if( bx2 <= 40 &&  by2 <= 33 ) {
-					if(game.timer.hp == 1){
+					if(game.timer.hp <= 1){
 						game.timer.hp--;
 						game.core.hp(game.timer.hp);
 						$(".hp").remove();
@@ -296,7 +294,6 @@ var game = {
 						clearInterval(game.timer.bullet);
 						clearInterval(oEnemy.bulletTimer);
 						clearInterval(game.timer.enemy);
-						clearInterval(game.timer.bg);
 						setTimeout( function () {
 							game.stage.append(tips);
 						},3000)

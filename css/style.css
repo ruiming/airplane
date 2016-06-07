@@ -32,6 +32,24 @@ body {
 	text-align: center;
 	margin: 60px auto;
 }
+#box .difficulty span{
+	color: white;
+}
+#box ul {
+	padding: 0;
+	color: white;
+	text-align: center;
+}
+#box li {
+	padding: 4px 0;
+	display: inline-block;
+	width: 100%;
+}
+#box li span{
+	width: 33.3333333%;
+	float: left;
+	display: block;
+}
 #box .difficulty a { 
 	width: 180px; 
 	height: 30px; 
@@ -110,6 +128,7 @@ body {
 	padding: 10px;
 	margin: 150px 140px;
 	background: #f0f0f0;
+	text-align: center;
 }
 #box .tips .type { 
 	width: 160px; 
@@ -119,6 +138,11 @@ body {
 	text-align: center; 
 	color: red; 
 	font-weight: bold;
+}
+input {
+	width: 120px;
+	padding: 5px 2px;
+	margin-left: 20px;
 }
 #box .tips p {
 	width: 160px;

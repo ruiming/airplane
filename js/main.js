@@ -1,12 +1,46 @@
 $(function() {
+	if(localStorage["name"] != undefined){
+		config.name = localStorage["name"];
+	}
+	else {
+		config.name = "渣渣";
+	}
+	if(localStorage["result"] != undefined){
+		result = JSON.parse(localStorage["result"]);
+	}
+	else{
+		var temp = {
+			name: "Ruiming",
+			score: "9999999000",
+			time: new Date().toLocaleString()
+		};
+		result.push(temp);
+		localStorage["result"] = JSON.stringify(result);
+	}
+
+	var before = $("<li><span>名字</span><span>分数</span><span>时间</span></li>");
+	list.prepend(before);
+	$.each(result,function(n, one){
+		var text =  $("<li></li>");
+		$.each(one, function(key, value){
+			text.append("<span>" + value + "</span>");
+		});
+		list.append(text);
+	});
 	startScreen.draw();
+
 });
+
+var result = [];
+var list = $("<ul></ul>");
 
 // 界面
 var game = $("#box");
 
 // 配置和参数
 var config = {
+
+	name: "渣渣",
 
 	type: [
 		"images/enemy/F15.png",
@@ -45,10 +79,24 @@ var startScreen = {
 		title.html("飞机大战");
 		game.append(title);
 
-		var difficulty = $("<div class='difficulty'><a href='javascript:void(0)'>开始游戏</a></div>");
+		game.append(list);
+		
+		var difficulty;
+
+		if(localStorage["name"] != undefined){
+			difficulty = $("<div class='difficulty'><a href='javascript:void(0)'>开始游戏</a></div>");
+		}
+		else {
+			difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");
+		}
+
 		game.append(difficulty);
 
 		game.find($(".difficulty")).delegate("a", "click", function(e) {
+			config.name = $(".difficulty input").val();
+			if(config.name == "" || config.name == undefined) {
+				config.name = "渣渣";
+			}
 			startScreen.remove();
 
 			$(document).mousemove(function(e) {
@@ -61,11 +109,16 @@ var startScreen = {
 			config.modetxt = $(this).html();
 			core.draw();
 
-			// 敌机速度随时间加快,每60s加快一次
-			setInterval(function(){
-				set[3] -= 500;
-				set[4] -= 500;
-			}, 60000);
+			// 敌机速度随时间加快,每1s加快一次
+			var fast = setInterval(function(){
+				if(set[3] >= 4000){
+					set[3] -= 10;
+					set[4] -= 10;
+				}
+				else{
+					clearInterval(fast);
+				}
+			}, 1000);
 
 
 			// 战机子弹发射事件
@@ -87,10 +140,6 @@ var startScreen = {
 	},
 	remove: function() {
 		var DIV = game.children($("div"));
-		DIV.stop().animate(
-			{opacity:0},
-			100
-		);
 		setTimeout(function() {
 			DIV.remove();
 		}, 300)
@@ -282,6 +331,7 @@ var core = {
 		});
 	},
 	GameOver: function(){
+
 		$(".hp").remove();
 		$(".warcraft").remove();
 		var tips = $("<div class='tips'></div>");
@@ -290,15 +340,24 @@ var core = {
 			game.append(tips);
 		}, 3000);
 
-		game.delegate(".tips, p", "click", function() {
+		var temp = {
+			name: config.name,
+			score: $(".score").html(),
+			time: new Date().toLocaleString()
+		};
+		result.push(temp);
+		list.append("<li><span>" + temp.name + "</span><span>" + temp.score + "</span><span>" + temp.time + "</span></li>");
+		localStorage["result"] = JSON.stringify(result);
+		localStorage["name"] = config.name;
+		$(".score").css("display", "none");
+		$(".warcraft").css("background", "url('img/boom2.png')");
+
+		game.delegate(".tips p", "click", function() {
 			config.num.score = 0;
 			config.warcraft.hp = 3;
 			startScreen.remove();
 			startScreen.draw();
 		});
-
-		$(".score").css("display", "none");
-		$(".warcraft").css("background", "url('img/boom2.png')");
 
 		clearInterval(config.timer.bullet);
 		clearInterval(config.timer.enemy);

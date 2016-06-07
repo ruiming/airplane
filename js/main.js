@@ -18,11 +18,12 @@ var game = {
 	timer : {
 		bg : null,
 		bullet : null,
-		enemy : null
+		enemy : null,
+		hp: 3
 	},
-	//子弹速度set[1]，子弹延迟set[2], 敌机速度set[3]到set[4]之间，敌机产生间距set[5]
+	//子弹速度set[1]，子弹延迟set[2], 敌机速度set[3]到set[4]之间，敌机产生间距set[5], HP set[6]
 	mode : [
-		[3,900,150,9000,9500,700]
+		[3,900,150,9000,9500,700,1000]
 	], //参数配置
 	num : {
 		count : 0,
@@ -56,7 +57,7 @@ var game = {
 				title.addClass("title");
 				title.html("打飞机 1.0 Javascript版");
 				game.stage.append(title);
-			
+
 			var difficulty = $("<div class='difficulty'><a href='javascript:void(0)'>开始游戏</a></div>");
 				game.stage.append(difficulty);
 
@@ -106,6 +107,12 @@ var game = {
 		draw : function ( speed ) {
 			var warcraft = $("<div class='warcraft'><img src='images/J-10/J-10.png'></div>");
 			game.stage.append(warcraft);
+
+			// HP槽
+			var HP = $("<div class='hp'></div>");
+			HP.html("生命值: " + game.timer.hp);
+			game.stage.append(HP);
+
 			var score = $("<div class='score'>0</div>");
 			game.stage.append(score);
 		}, //绘制游戏场景
@@ -134,10 +141,17 @@ var game = {
 			game.num.warcraftX = left + warcraft.width()/2;
 			game.num.warcraftY = top + warcraft.height()/2;
 		},
+		// 设置生命值
+		hp : function (hp) {
+			// HP槽
+			var HP = $(".hp");
+				HP.html("生命值:" + hp);
+		},
 		// 发射子弹
 		bullet : function ( speed ,pos ) {
 			var bullet = $("<div class='bullet'></div>");
 			game.stage.append(bullet);
+
 			// 子弹位置
 			bullet.css({
 					left : pos[0] - bullet.width()/2,
@@ -213,6 +227,56 @@ var game = {
 					var bx3 = Math.abs( parseInt($(".warcraft").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 12),
 						by3 = Math.abs( parseInt($(".warcraft").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
 					if( bx3 <= 14 &&  by3 <= 20 ) {
+						if(game.timer.hp == 1){
+							game.timer.hp--;
+							game.core.hp(game.timer.hp);
+							$(".hp").remove();
+							var tips = $("<div class='tips'></div>");
+							tips.html("<span>Game Over</span><span>分数:"+$(".score").html() + "</span><p>重来</p>");
+							game.stage.delegate(".tips p",'click',function(){
+								// 重来，分数清零，重绘开始页面
+								game.num.score = 0;
+								game.startScreen.remove();
+								game.startScreen.draw();
+							});
+							// 移除敌机
+							oEnemy.remove();
+							// 分数隐藏，战机爆炸
+							$(".score").css("display","none");
+							$(".warcraft").css("background","url('img/boom2.png')");
+							// 清除计数器和循环
+							clearInterval(oEnemy.timer);
+							setTimeout( function () { $(".warcraft").remove(); },300);
+							clearInterval(game.timer.bullet);
+							clearInterval(oEnemy.bulletTimer);
+							clearInterval(game.timer.enemy);
+							clearInterval(game.timer.bg);
+							setTimeout( function () {
+								game.stage.append(tips);
+							},3000)
+						}
+						else {
+							game.timer.hp--;
+							game.core.hp(game.timer.hp);
+							$(".enemyBullet").eq(d).remove();
+							$(".warcraft").css("background","url('img/boom2.png')");
+							setTimeout( function() {
+								$(".warcraft").css("background","");
+							}, 1000)
+							clearInterval(oEnemy.bulletTimer);
+						}
+					}
+				}
+
+
+				// 敌机距离飞机位置
+				var bx2 = Math.abs( x - parseInt($(".warcraft").css("left")) - 30),
+					by2 = Math.abs( y - parseInt($(".warcraft").css("top")) - 18);
+				if( bx2 <= 40 &&  by2 <= 33 ) {
+					if(game.timer.hp == 1){
+						game.timer.hp--;
+						game.core.hp(game.timer.hp);
+						$(".hp").remove();
 						var tips = $("<div class='tips'></div>");
 						tips.html("<span>Game Over</span><span>分数:"+$(".score").html() + "</span><p>重来</p>");
 						game.stage.delegate(".tips p",'click',function(){
@@ -237,36 +301,18 @@ var game = {
 							game.stage.append(tips);
 						},3000)
 					}
-				}
-
-
-				// 敌机或子弹距离飞机位置
-				var bx2 = Math.abs( x - parseInt($(".warcraft").css("left")) - 30),
-					by2 = Math.abs( y - parseInt($(".warcraft").css("top")) - 18);
-				if( bx2 <= 40 &&  by2 <= 33 ) {
-					var tips = $("<div class='tips'></div>");
-					tips.html("<span>Game Over</span><span>分数:"+$(".score").html() + "</span><p>重来</p>");
-					game.stage.delegate(".tips p",'click',function(){
-						// 重来，分数清零，重绘开始页面
-						game.num.score = 0;
-						game.startScreen.remove();
-						game.startScreen.draw();
-					});
-					// 移除敌机
-					oEnemy.remove();
-					// 分数隐藏，战机爆炸
-					$(".score").css("display","none");
-					$(".warcraft").css("background","url('img/boom2.png')");
-					// 清除计数器和循环
-					clearInterval(oEnemy.timer);
-					setTimeout( function () { $(".warcraft").remove(); },300)
-					clearInterval(game.timer.bullet);
-					clearInterval(oEnemy.bulletTimer);
-					clearInterval(game.timer.enemy);
-					clearInterval(game.timer.bg);
-					setTimeout( function () {
-						game.stage.append(tips);
-					},3000)
+					else {
+						game.timer.hp--;
+						game.core.hp(game.timer.hp);
+						oEnemy.remove();
+						clearInterval(oEnemy.timer);
+						clearInterval(oEnemy.bulletTimer);
+						$(".warcraft").css("background","url('img/boom2.png')");
+						setTimeout( function() {
+							$(".warcraft").css("background","");
+						}, 1000)
+						clearInterval(oEnemy.bulletTimer);
+					}
 				}
 			},50)
 		} //敌机

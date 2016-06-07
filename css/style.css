@@ -81,7 +81,17 @@ body {
 	position: absolute; 
 	z-index: 3
 }
-#box .score { 
+#box .hp {
+	color :red;
+	top: 770px;
+	line-height: 30px;
+	position: absolute;
+	font-weight: bold;
+	padding-left: 5px;
+	font-size: 16px;
+	z-index: 5;
+}
+#box .score {
 	width: 220px; 
 	height: 30px; 
 	line-height: 30px; 

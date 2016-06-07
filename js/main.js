@@ -40,6 +40,10 @@ var game = $("#box");
 // 配置和参数
 var config = {
 
+	resource: [
+		"images/resource/gift_more_bullet.png"
+	],
+
 	name: "渣渣",
 
 	type: [
@@ -219,11 +223,12 @@ var core = {
 			type = argument.type,
 			gift = argument.type;
 
-		var oEnemy = $("<div class='enemy'><img style='width: 30px' src='" + config.type[type] + "'</div>");
+		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
 			oEnemy.css({
 				left: left,
 				top: top
 			});
+
 			oEnemy.appendTo(game);
 			oEnemy.stop().animate(
 				{top: 1000},
@@ -236,25 +241,26 @@ var core = {
 
 		// 敌机子弹事件
 		oEnemy.bulletTimer = setInterval(function() {
-		var x = parseInt(oEnemy.css("left")) + 12,
-			y = parseInt(oEnemy.css("top")) + 15;
+			var x = parseInt(oEnemy.css("left")) + 12,
+				y = parseInt(oEnemy.css("top")) + 15;
 
-		var enemyBullet = $("<div class='enemyBullet'></div>");
 
-		enemyBullet.css({
-			left: x - enemyBullet.width()/2 + 5,
-			top: y + enemyBullet.height()*2
-		});
+			var enemyBullet = $("<div class='enemyBullet'></div>");
 
-		game.append(enemyBullet);
-		enemyBullet.stop().animate(
-			{top: 3000},
-			speed/2.5,
-			function() {
-				enemyBullet.remove();
-				clearInterval(oEnemy.bulletTimer);
-			}
-		)
+			enemyBullet.css({
+				left: x - enemyBullet.width()/2 + 5,
+				top: y + enemyBullet.height()*2
+			});
+
+			game.append(enemyBullet);
+			enemyBullet.stop().animate(
+				{top: 3000},
+				speed/2.5,
+				function() {
+					enemyBullet.remove();
+					clearInterval(oEnemy.bulletTimer);
+				}
+			)
 		}, 1400);
 
 		// 碰撞检测
@@ -270,10 +276,18 @@ var core = {
 					by = Math.abs( y - parseInt($(".bullet").eq(i).css("top")));
 
 				if(bx <= 14 && by <= 20) {
-					oEnemy.css("background", "url('img/boom.png')");
-					setTimeout(function() {
-						oEnemy.remove();
-					}, 300)
+					// 掉礼物
+					if(argument.gift%50 == 2){
+						setTimeout(function() {
+							oEnemy.children('img').attr("src", config.resource[0]);
+						}, 300);
+					}
+					else {
+						oEnemy.css("background", "url('img/boom.png')");
+						setTimeout(function() {
+							oEnemy.remove();
+						}, 300);
+					}
 					$(".bullet").eq(i).remove();
 					clearInterval(oEnemy.bulletTimer);
 					clearInterval(oEnemy.timer);

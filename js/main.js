@@ -61,6 +61,13 @@ var startScreen = {
 			config.modetxt = $(this).html();
 			core.draw();
 
+			// 敌机速度随时间加快,每60s加快一次
+			setInterval(function(){
+				set[3] -= 500;
+				set[4] -= 500;
+			}, 60000);
+
+
 			// 战机子弹发射事件
 			config.timer.bullet = setInterval(function() {
 				core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);

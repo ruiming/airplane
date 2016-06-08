@@ -75,7 +75,7 @@ var config = {
 		warcraftY: 0,
 		score: 0,
 		hp: 3,
-		interval: 1,
+		interval: 5,
 		boom: 3
 	}
 
@@ -116,16 +116,16 @@ var startScreen = {
 			});
 
 			var down = [];
-
+			var up = 1;
 
 			$(document).keydown(function(e){
 				down[e.keyCode] = true;
 				// 发射子弹
 				if(down[17]  && config.num.bullet > 0 && config.warcraft.hp > 0) {	// ctrl
-					if(config.num.interval%5 == 1){
+					if(up % config.num.interval == 1){
 						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
 					}
-					config.num.interval ++;
+					up ++;
 				}
 
 				// 发射导弹
@@ -134,6 +134,7 @@ var startScreen = {
 				}
 			}).keyup(function(e){
 				down[e.keyCode] = false;
+				up = 1;
 			});
 
 
@@ -222,6 +223,39 @@ var core = {
 
 		config.num.warcraftX = left + warcraft.width()/2;
 		config.num.warcraftY = top + warcraft.height()/2;
+
+		var t = $(".gift").length;
+		// 我方获取礼物
+		for(var u=0; u<t; u++){
+			var gift = $(".gift").eq(u);
+			var bx4 = Math.abs(parseInt(warcraft.css("left")) - parseInt(gift.css("left"))),
+				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
+			if(bx4 <= 10 && by4 <= 10) {
+				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
+					config.num.bullet += 100;
+					$(".bulletCount").html("弹药: " + config.num.bullet);
+					gift.remove();
+				}
+				else if(gift.attr("src") == "images/resource/gift_more_boom.png"){
+					config.num.boom += 1;
+					$(".boomCount").html("导弹数: " + config.num.boom);
+					gift.remove();
+				}
+				else if(gift.attr("src") == "images/resource/gift_more_health.png"){
+					config.warcraft.hp += 1;
+					$(".hp").html("生命值: " + config.warcraft.hp);
+					gift.remove();
+				}
+				else if(gift.attr("src") == "images/resource/gift_more_power.png"){
+					config.num.interval = 2;
+					setTimeout(function(){
+						config.num.interval = 5;
+					}, 10000);
+					gift.remove();
+				}
+			}
+		}
+
 	},
 	// 战机生命值
 	hp: function(hp) {
@@ -253,7 +287,10 @@ var core = {
 			top: pos[1] - bullet.height()/2
 		});
 
-		config.num.bullet--;
+		if(config.num.bullet > 3) {		// 低于3的情况为奖励时间，不扣子弹
+			config.num.bullet--;
+		}
+
 		var bulletCount = $(".bulletCount");
 			bulletCount.html("弹药: " + config.num.bullet);
 
@@ -469,6 +506,7 @@ var core = {
 		game.delegate(".tips p", "click", function() {
 			config.num.score = 0;
 			config.warcraft.hp = 3;
+			config.num.interval = 5;
 			setList();
 			startScreen.remove();
 			startScreen.draw();

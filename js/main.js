@@ -223,9 +223,14 @@ var core = {
 		if(config.num.boom > 0){
 			config.warcraft.boom = true;
 			config.num.boom--;
+			var boomBG = $("<img>");
+				boomBG.addClass('boomBG');
+				boomBG.attr("src", "images/resource/boom.png");
+			game.append(boomBG);
 			$(".boomCount").html("导弹数: " + config.num.boom);
 			setTimeout(function(){
-				config.warcraft.boom = false
+				config.warcraft.boom = false;
+				boomBG.remove();
 			}, 1000);
 		}
 	},

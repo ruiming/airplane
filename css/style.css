@@ -92,6 +92,11 @@ body {
 	z-index: 2;
 	transition-timing-function: linear;
 }
+#box .gift {
+	width:30px;
+	height:30px;
+	position: absolute;
+}
 #box .enemyBullet {
 	width: 6px;
 	height: 22px;

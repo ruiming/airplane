@@ -34,6 +34,15 @@ var game = $("#box");
 var config = {
 
 	resource: [
+		"images/resource/gift_more_bullet.png",
+		"images/resource/gift_more_bullet.png",
+		"images/resource/gift_more_bullet.png",
+		"images/resource/gift_more_boom.png",
+		"images/resource/gift_Invincible.png",
+		"images/resource/gift_more_power.png",
+		"images/resource/gift_more_health.png",
+		"images/resource/gift_more_power.png",
+		"images/resource/gift_more_bullet.png",
 		"images/resource/gift_more_bullet.png"
 	],
 
@@ -151,7 +160,7 @@ var startScreen = {
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
 					type: randomNum(1, 3),
-					gift: randomNum(1, 100)
+					gift: randomNum(0, 20)	// todo Change Me
 				})
 			}, set[5])
 		})
@@ -312,17 +321,29 @@ var core = {
 				k = $(".enemyBullet").length;
 
 			if(config.warcraft.boom){
-				if(argument.gift%50 == 2){
+				oEnemy.css("background", "url('img/boom.png')");
+				if(argument.gift > 0 && argument.gift < 10) {
 					setTimeout(function() {
-						oEnemy.children('img').attr("src", config.resource[0]);
+						var gift = $("<img>");
+						gift.addClass('gift');
+						gift.css({
+							left: x,
+							top: y
+						});
+						gift.attr("src", config.resource[argument.gift]);
+						gift.stop().animate(
+							{top: 1500},
+							speed,
+							function(){
+								gift.remove();
+							}
+						);
+						game.append(gift);
 					}, 300);
 				}
-				else {
-					oEnemy.css("background", "url('img/boom.png')");
-					setTimeout(function() {
-						oEnemy.remove();
-					}, 300);
-				}
+				setTimeout(function() {
+					oEnemy.remove();
+				}, 300);
 				clearInterval(oEnemy.bulletTimer);
 				clearInterval(oEnemy.timer);
 				config.num.score++;
@@ -340,17 +361,29 @@ var core = {
 
 				if(bx <= 14 && by <= 20) {
 					// 掉礼物
-					if(argument.gift%50 == 2){
+					oEnemy.css("background", "url('img/boom.png')");
+					if(argument.gift > 0 && argument.gift < 10) {
 						setTimeout(function() {
-							oEnemy.children('img').attr("src", config.resource[0]);
+							var gift = $("<img>");
+								gift.addClass('gift');
+								gift.css({
+									left: x,
+									top: y
+								});
+								gift.attr("src", config.resource[argument.gift]);
+							gift.stop().animate(
+								{top: 1500},
+								speed,
+								function(){
+									gift.remove();
+								}
+							);
+							game.append(gift);
 						}, 300);
 					}
-					else {
-						oEnemy.css("background", "url('img/boom.png')");
-						setTimeout(function() {
-							oEnemy.remove();
-						}, 300);
-					}
+					setTimeout(function() {
+						oEnemy.remove();
+					}, 300);
 					$(".bullet").eq(i).remove();
 					clearInterval(oEnemy.bulletTimer);
 					clearInterval(oEnemy.timer);

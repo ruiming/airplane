@@ -18,21 +18,14 @@ $(function() {
 		localStorage["result"] = JSON.stringify(result);
 	}
 
-	var before = $("<li><span>名字</span><span>分数</span><span>时间</span></li>");
-	list.prepend(before);
-	$.each(result,function(n, one){
-		var text =  $("<li></li>");
-		$.each(one, function(key, value){
-			text.append("<span>" + value + "</span>");
-		});
-		list.append(text);
-	});
+	setList();
+
 	startScreen.draw();
 
 });
 
 var result = [];
-var list = $("<ul></ul>");
+var list = null;
 
 // 界面
 var game = $("#box");
@@ -250,9 +243,9 @@ var core = {
 		var bulletCount = $(".bulletCount");
 			bulletCount.html("弹药: " + config.num.bullet);
 
-		bullet.stop().animate(
-			{top: -bullet.height()},
-			speed,
+		bullet.stop().animate(	// 修正
+			{top: -4000},
+			speed*4,
 			function(){
 				bullet.remove();
 			}
@@ -427,7 +420,9 @@ var core = {
 			time: new Date().toLocaleString()
 		};
 		result.push(temp);
-		list.append("<li><span>" + temp.name + "</span><span>" + temp.score + "</span><span>" + temp.time + "</span></li>");
+		if(result.length > 10){
+			result.shift();
+		}
 		localStorage["result"] = JSON.stringify(result);
 		localStorage["name"] = config.name;
 		$(".score").css("display", "none");
@@ -436,6 +431,7 @@ var core = {
 		game.delegate(".tips p", "click", function() {
 			config.num.score = 0;
 			config.warcraft.hp = 3;
+			setList();
 			startScreen.remove();
 			startScreen.draw();
 		});
@@ -447,4 +443,16 @@ var core = {
 var randomNum = function(a, b){
 	var value = Math.abs(a-b), num;
 	return parseInt(Math.random()*value) + Math.min(a,b);
+};
+var setList = function(){
+	list = $("<ul></ul>");
+	var before = $("<li><span>名字</span><span>分数</span><span>时间</span></li>");
+	list.prepend(before);
+	$.each(result,function(n, one){
+		var text =  $("<li></li>");
+		$.each(one, function(key, value){
+			text.append("<span>" + value + "</span>");
+		});
+		list.append(text);
+	});
 };

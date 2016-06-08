@@ -103,11 +103,31 @@ var startScreen = {
 			}
 			startScreen.remove();
 
-			$(document).mousemove(function(e) {
-				var x = e.clientX - game.offset().left;
-				var y = e.clientY - game.offset().top;
+			core.warcraft([400,700]);	// 战机初始位置
+
+			var down = [];
+
+			$(document).keydown(function(e){
+				down[e.keyCode] = true;
+				var x = Math.abs(parseInt($(".warcraft").css("left")));
+				var y = Math.abs(parseInt($(".warcraft").css("top")));
+				if(down[87]){
+					y-=20;
+				}
+				if(down[83]){
+					y+=20;
+				}
+				if(down[65]){
+					x-=50;
+				}
+				if(down[68]){
+					x+=50;
+				}
 				core.warcraft([x,y]);
+			}).keyup(function(e){
+				down[e.keyCode] = false;
 			});
+
 
 			var set = config.mode;
 			config.modetxt = $(this).html();
@@ -167,8 +187,8 @@ var core = {
 	// 战机位置
 	warcraft: function(pos) {
 		var warcraft = game.find($(".warcraft")),
-			left = pos[0] - warcraft.width()/2 -15,
-			top = pos[1] - warcraft.height()/2 - 15;
+			left = pos[0],
+			top = pos[1];
 
 		if(left <= -warcraft.width()/2){
 			left = -warcraft.width()/2 + 5;

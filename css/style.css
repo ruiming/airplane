@@ -6,10 +6,10 @@ body {
 #box {
 	width: 600px;
 	height: 800px;
-	margin: 10px auto; 
-	overflow: hidden; 
-	position: relative; 
-	border: 15px solid #f0f0f0; 
+	margin: 10px auto;
+	overflow: hidden;
+	position: relative;
+	border: 15px solid #f0f0f0;
 	background-image: url('../images/bg.jpg');
 	background-position: 0 0;
 	background-repeat: repeat-y;
@@ -50,34 +50,31 @@ body {
 	float: left;
 	display: block;
 }
-#box .difficulty a { 
-	width: 180px; 
-	height: 30px; 
-	line-height: 30px; 
-	text-align: center; 
-	display: block; 
-	margin: 20px auto 0 auto; 
-	background: #f0f0f0; 
-	color: #333; 
+#box .difficulty a {
+	width: 180px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	display: block;
+	margin: 20px auto 0 auto;
+	background: #f0f0f0;
+	color: #333;
 	text-decoration: none;
 }
-#box .difficulty a:hover { 
-	background: #900; 
+#box .difficulty a:hover {
+	background: #900;
 	color: #fff;
 }
-#box .bg img { 
+#box .bg img {
 	display: block;
 }
-#box .warcraft { 
+#box .warcraft {
 	width: 40px;
 	height: 60px;
-	position: absolute; 
-	left: 120px;  
+	position: absolute;
+	left: 120px;
 	top: 500px;
 	z-index: 3;
-	transition: 0.3s;
-	transition-timing-function: linear;
-	transition-duration: 0.1s;
 }
 #box .warcraft img {
 	width: 40px;

@@ -3,7 +3,7 @@ body {
 	padding: 0; 
 	background: #000;
 }
-#box { 
+#box {
 	width: 600px;
 	height: 800px;
 	margin: 10px auto; 
@@ -75,16 +75,19 @@ body {
 	left: 120px;  
 	top: 500px;
 	z-index: 3;
+	transition: 0.3s;
+	transition-timing-function: linear;
+	transition-duration: 0.1s;
 }
 #box .warcraft img {
 	width: 40px;
 }
 #box .bullet {
-	width: 6px; 
-	height: 22px; 
-	background: url('../img/bullet.png'); 
-	position: absolute; 
-	z-index: 2
+	width: 6px;
+	height: 22px;
+	background: url('../img/bullet.png');
+	position: absolute;
+	z-index: 2;
 }
 #box .enemyBullet {
 	width: 6px;

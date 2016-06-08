@@ -241,7 +241,7 @@ var core = {
 
 		// 敌机子弹事件
 		oEnemy.bulletTimer = setInterval(function() {
-			var x = parseInt(oEnemy.css("left")) + 12,
+			var x = parseInt(oEnemy.css("left")) + 6,
 				y = parseInt(oEnemy.css("top")) + 15;
 
 

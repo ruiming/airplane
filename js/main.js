@@ -57,7 +57,8 @@ var config = {
 	warcraft: {
 		hp: 3,
 		type: "images/J-10/J-10.png",
-		boom: false
+		boom: false,
+		invincible: false
 	},
 
 	timer: {
@@ -230,7 +231,7 @@ var core = {
 			var gift = $(".gift").eq(u);
 			var bx4 = Math.abs(parseInt(warcraft.css("left")) - parseInt(gift.css("left"))),
 				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
-			if(bx4 <= 10 && by4 <= 10) {
+			if(bx4 <= 30 && by4 <= 20) {
 				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
 					config.num.bullet += 100;
 					$(".bulletCount").html("弹药: " + config.num.bullet);
@@ -246,12 +247,27 @@ var core = {
 					$(".hp").html("生命值: " + config.warcraft.hp);
 					gift.remove();
 				}
-				else if(gift.attr("src") == "images/resource/gift_more_power.png"){
+				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费子弹和子弹频率加快
 					config.num.interval = 2;
 					setTimeout(function(){
 						config.num.interval = 5;
 					}, 10000);
 					gift.remove();
+				}
+				else if(gift.attr("src") == "images/resource/gift_Invincible.png"){		// 无敌十秒
+					config.warcraft.invincible = true;
+					warcraft.css({
+						padding: "5px",
+						border: "1px solid red",
+						borderRadius: "50%"
+					});
+					setTimeout(function(){
+						config.warcraft.invincible = false;
+						warcraft.css({
+							border: "none",
+							padding: "5px"
+						})
+					}, 10000);
 				}
 			}
 		}
@@ -435,8 +451,10 @@ var core = {
 					by2 = Math.abs(parseInt($(".warcraft").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
 
 				if(bx2 <= 14 && by2 <= 20) {
-					config.warcraft.hp--;
-					core.hp(config.warcraft.hp);
+					if(!config.warcraft.invincible){
+						config.warcraft.hp--;
+						core.hp(config.warcraft.hp);
+					}
 					if(config.warcraft.hp <= 0) {
 						core.GameOver();
 					}
@@ -454,8 +472,10 @@ var core = {
 			var bx3 = Math.abs(x - parseInt($(".warcraft").css("left")) - 30),
 				by3 = Math.abs(y - parseInt($(".warcraft").css("top")) - 18);
 			if(bx3 <= 40 && by3 <= 33) {
-				config.warcraft.hp--;
-				core.hp(config.warcraft.hp);
+				if(!config.warcraft.invincible){
+					config.warcraft.hp--;
+					core.hp(config.warcraft.hp);
+				}
 
 				oEnemy.css("background", "url('img/boom.png')");
 				setTimeout(function() {

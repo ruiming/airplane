@@ -54,7 +54,8 @@ var config = {
 
 	warcraft: {
 		hp: 3,
-		type: "images/J-10/J-10.png"
+		type: "images/J-10/J-10.png",
+		boom: false
 	},
 
 	timer: {
@@ -67,10 +68,13 @@ var config = {
 
 	num: {
 		count: 0,
+		bullet: 1000,
 		warcraftX: 0,
 		warcraftY: 0,
 		score: 0,
-		hp: 3
+		hp: 3,
+		interval: 1,
+		boom: 3
 	}
 
 };
@@ -109,6 +113,28 @@ var startScreen = {
 				core.warcraft([x,y]);
 			});
 
+			var down = [];
+
+
+			$(document).keydown(function(e){
+				down[e.keyCode] = true;
+				// 发射子弹
+				if(down[17]  && config.num.bullet > 0 && config.warcraft.hp > 0) {	// ctrl
+					if(config.num.interval%5 == 1){
+						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
+					}
+					config.num.interval ++;
+				}
+
+				// 发射导弹
+				if(down[32] && config.num.boom > 0) {
+					core.boom();
+				}
+			}).keyup(function(e){
+				down[e.keyCode] = false;
+			});
+
+
 			var set = config.mode;
 			config.modetxt = $(this).html();
 			core.draw();
@@ -124,11 +150,6 @@ var startScreen = {
 				}
 			}, 1000);
 
-
-			// 战机子弹发射事件
-			config.timer.bullet = setInterval(function() {
-				core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
-			}, set[2]);
 
 			// 敌机生成事件
 			config.timer.enemy = setInterval(function() {
@@ -160,6 +181,14 @@ var core = {
 		var hp = $("<div class='hp'></div>");
 		hp.html("生命值: " + config.warcraft.hp);
 		game.append(hp);
+
+		var bulletCount = $("<div class='bulletCount'></div>");
+		bulletCount.html("弹药: " + config.num.bullet);
+		game.append(bulletCount);
+
+		var boomCount = $("<div class='boomCount'></div>");
+		boomCount.html("导弹: " + config.num.boom);
+		game.append(boomCount);
 
 		var score = $("<div class='score'>0</div>");
 		game.append(score);
@@ -197,6 +226,16 @@ var core = {
 		var HP = $(".hp");
 		HP.html("生命值:" + hp);
 	},
+	boom: function(){
+		if(config.num.boom > 0){
+			config.warcraft.boom = true;
+			config.num.boom--;
+			$(".boomCount").html("导弹数: " + config.num.boom);
+			setTimeout(function(){
+				config.warcraft.boom = false
+			}, 1000);
+		}
+	},
 	// 战机子弹
 	bullet: function(speed, pos) {
 		var bullet = $("<div class='bullet'></div>");
@@ -206,6 +245,10 @@ var core = {
 			left: pos[0] - bullet.width()/2,
 			top: pos[1] - bullet.height()/2
 		});
+
+		config.num.bullet--;
+		var bulletCount = $(".bulletCount");
+			bulletCount.html("弹药: " + config.num.bullet);
 
 		bullet.stop().animate(
 			{top: -bullet.height()},
@@ -269,6 +312,28 @@ var core = {
 				y = parseInt(oEnemy.css("top")) + 15,
 				l = $(".bullet").length,
 				k = $(".enemyBullet").length;
+
+			if(config.warcraft.boom){
+				if(argument.gift%50 == 2){
+					setTimeout(function() {
+						oEnemy.children('img').attr("src", config.resource[0]);
+					}, 300);
+				}
+				else {
+					oEnemy.css("background", "url('img/boom.png')");
+					setTimeout(function() {
+						oEnemy.remove();
+					}, 300);
+				}
+				clearInterval(oEnemy.bulletTimer);
+				clearInterval(oEnemy.timer);
+				config.num.score++;
+				game.find($(".score")).html(config.num.score*1000);
+
+				for(var w=0; w<k; w++){
+					$(".enemyBullet").eq(w).remove();
+				}
+			}
 
 			// 敌机与我方子弹触碰
 			for(var i=0; i<l; i++){
@@ -347,7 +412,9 @@ var core = {
 	GameOver: function(){
 
 		$(".hp").remove();
+		$(".bulletCount").remove();
 		$(".warcraft").remove();
+		$(".boomCount").remove();
 		var tips = $("<div class='tips'></div>");
 		tips.html("<span>Game Over</span><span>分数:" + $(".score").html() + "</span><p>重来</p>");
 		setTimeout(function() {

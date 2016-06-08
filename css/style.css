@@ -99,16 +99,25 @@ body {
 	position: absolute; 
 	z-index: 3
 }
-#box .hp {
-	color :red;
+#box .hp ,
+#box .bulletCount,
+#box .boomCount {
+	color: red;
 	top: 770px;
 	line-height: 30px;
-	position: absolute;
 	font-weight: bold;
-	padding-left: 5px;
+	padding-left: 10px;
 	font-size: 16px;
 	z-index: 5;
+	position: absolute;
 }
+#box .bulletCount {
+	padding-left: 110px;
+}
+#box .boomCount {
+	padding-left: 220px;
+}
+
 #box .score {
 	width: 220px; 
 	height: 30px; 

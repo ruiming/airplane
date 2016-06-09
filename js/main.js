@@ -322,11 +322,11 @@ var core = {
 		game.append(bullet);
 
 		bullet.css({
-			left: pos[0] - bullet.width()/2,
+			left: pos[0] - bullet.width()/2 + 5,
 			top: pos[1] - bullet.height()/2
 		});
 
-		if(config.num.bullet > 3) {		// 低于3的情况为奖励时间，不扣子弹
+		if(config.warcraft.powerLimit == 0) {
 			config.num.bullet--;
 		}
 

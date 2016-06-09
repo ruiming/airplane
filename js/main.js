@@ -113,7 +113,10 @@ var startScreen = {
 		title.addClass("title");
 		title.html("飞机大战");
 		game.append(title);
-
+        var help = $("<div>");
+            help.addClass("help");
+            help.html("ctrl键发射炮弹，space键发射导弹.<br/> Made by Ruiming");
+        game.append(help);
 		game.append(list);
 
 		var difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");

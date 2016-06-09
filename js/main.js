@@ -89,8 +89,8 @@ var config = {
         levelup: null
 	},
 
-	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距700
-	mode: [null, 900, 150, 6500, 7500, 800, 1000],
+	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距750
+	mode: [null, 900, 150, 6500, 7500, 750, 1000],
 
 	num: {
 		count: 0,
@@ -165,9 +165,9 @@ var startScreen = {
 
 			// 敌机速度随时间加快,每1s加快一次
 			var fast = setInterval(function(){
-				if(set[3] >= 4000){
-					set[3] -= 10;
-					set[4] -= 10;
+				if(set[3] >= 3000){
+					set[3] -= 15;
+					set[4] -= 15;
 				}
 				else{
 					clearInterval(fast);
@@ -190,18 +190,21 @@ var startScreen = {
             config.timer.levelup = setInterval(function(){
                 if(config.num.score < 200000) {
                     config.warcraft.level = 1;
+                    config.mode[5] = 700;
                 }
                 else if(config.num.score >= 200000 && config.num.score <= 500000) {
                     config.warcraft.level = 2;
                     $(".level").html("LV.2");
                     config.warcraft.bulletType = 1;
-                    config.mode[1] = 700;       // 子弹加快
+                    config.mode[1] = 650;       // 子弹加快
+                    config.mode[5] -= 100;
                 }
                 else if(config.num.score > 500000) {
                     config.warcraft.level = 3;
                     $(".level").html("LV.3");
                     config.warcraft.bulletType = 2;
-                    config.mode[1] = 600;
+                    config.mode[1] = 500;
+                    config.mode[5] = 600;
                 }
             },100)
 		})
@@ -489,7 +492,7 @@ var core = {
 			gift = argument.type;
 		// 经验值
 		switch(argument.type){
-			case 0:							// F15，各项居中
+			case 0:							// F15，射速快
 			case 1:
 			case 2:
 			case 3:
@@ -499,7 +502,7 @@ var core = {
 				argument.bulletlimit = 1500;
 				argument.bullettype = 1;
 				argument.hp = 1;
-				argument.bulletSpeed = 3000;
+				argument.bulletSpeed = 2000;
 				break;
 			case 4:							// F16，子弹频率稍快
 			case 5:

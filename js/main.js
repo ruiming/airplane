@@ -115,7 +115,7 @@ var startScreen = {
 		game.append(title);
         var help = $("<div>");
             help.addClass("help");
-            help.html("ctrl键发射炮弹，space键发射导弹.<br/> Made by Ruiming");
+            help.html("ctrl键发射炮弹，space键发射导弹.<br/>注意敌机速度会逐渐加快，请尽快凑够经验以升级！<br/> Made by Ruiming");
         game.append(help);
 		game.append(list);
 

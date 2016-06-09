@@ -49,19 +49,24 @@ var config = {
 	name: "渣渣",
 
 	type: [
-		"images/enemy/F15.png",
-		"images/enemy/F15.png",
-		"images/enemy/F15.png",
-		"images/enemy/F15.png",
-		"images/enemy/F16.png",
-		"images/enemy/F16.png",
-		"images/enemy/F35.png"
-
+		// 四架F15，两架F16，一架F35，两架J10，两架J31，一架T50
+		"images/enemy/F15.png",		// 0
+		"images/enemy/F15.png",		// 1
+		"images/enemy/F15.png",		// 2
+		"images/enemy/F15.png",     // 3
+		"images/enemy/F16.png",		// 4
+		"images/enemy/F16.png",		// 5
+		"images/enemy/F35.png",     // 6
+		"images/enemy/J-10.png",    // 7
+		"images/enemy/J-10.png",	// 8
+		"images/enemy/J-31.png",	// 9
+		"images/enemy/J-31.png",	// 10
+		"images/enemy/T50.png"		// 11
 	],
 
 	warcraft: {
 		hp: 3,
-		type: "images/J-10/J-10.png",
+		type: "images/J-20/J-20.png",
 		boom: false,
 		invincible: 0,
 		powerLimit: 0,
@@ -169,7 +174,7 @@ var startScreen = {
 					speed: randomNum(set[3], set[4]),
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
-					type: randomNum(0, 7),
+					type: randomNum(0, 12),
 					gift: randomNum(0, 100)
 				})
 			}, set[5])
@@ -454,30 +459,53 @@ var core = {
 			gift = argument.type;
 		// 经验值
 		switch(argument.type){
-			case 0:							// F15
+			case 0:							// F15，各项居中
 			case 1:
 			case 2:
 			case 3:
 				argument.exp = 1000;
-				argument.bulletlimit = 1400;
+				argument.bulletlimit = 1500;
 				argument.bullettype = 1;
 				argument.hp = 1;
 				argument.bulletSpeed = 3000;
 				break;
-			case 4:							// F16
+			case 4:							// F16，子弹频率稍快
 			case 5:
-				argument.exp = 1500;
-				argument.bulletlimit = 1100;
+				argument.exp = 1200;
+				argument.bulletlimit = 1200;
 				argument.bullettype = 1;
 				argument.hp = 1;
 				argument.bulletSpeed = 3000;
 				break;
-			case 6:							// F35
-				argument.exp = 3000;
-				argument.bulletlimit = 2000;
+			case 6:							// F35，三弹，血多，子弹频率稍慢，射速慢
+				argument.exp = 2000;
+				argument.bulletlimit = 1800;
 				argument.bullettype = 2;
 				argument.hp = 2;
-				argument.bulletSpeed = 3000;
+				argument.bulletSpeed = 4000;
+				break;
+			case 7:							// J10，血多，子弹频率慢，射速快
+			case 8:
+				argument.exp = 1500;
+				argument.bulletlimit = 1600;
+				argument.bullettype = 1;
+				argument.hp = 2;
+				argument.bulletSpeed = 2000;
+				break;
+			case 9:							// J31，血多
+			case 10:
+				argument.exp = 2500;
+				argument.bulletlimit = 1700;
+				argument.bullettype = 1;
+				argument.hp = 3;
+				argument.bulletSpeed = 2800;
+				break;
+			case 11:						// T50,三弹，射速快，频率高
+				argument.exp = 5000;
+				argument.bulletlimit = 1000;
+				argument.bulletype = 2;
+				argument.hp = 4;
+				argument.bulletSpeed = 2200;
 				break;
 		}
 		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");

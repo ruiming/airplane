@@ -125,6 +125,9 @@ body {
 	z-index: 5;
 	position: absolute;
 }
+#box .status span{
+	padding-left: 25px;
+}
 #box .bulletCount {
 	padding-left: 110px;
 }

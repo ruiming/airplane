@@ -58,8 +58,8 @@ var config = {
 		hp: 3,
 		type: "images/J-10/J-10.png",
 		boom: false,
-		invincible: false,
-		limit: 0
+		invincible: 0,
+		powerLimit: 0
 	},
 
 	timer: {
@@ -195,12 +195,42 @@ var core = {
 		boomCount.html("导弹: " + config.num.boom);
 		game.append(boomCount);
 
-		var status = $("<div class='status'></div>");
+		var status = $("<div class='status'><span class='power'></span><span class='invincible'></span></div>");
 		game.append(status);
 
 		var score = $("<div class='score'>0</div>");
 		game.append(score);
 
+		// 战机高速免费子弹事件
+		warcraft.powerTime = setInterval(function(){
+			if(config.warcraft.powerLimit > 0){
+				config.warcraft.powerLimit--;
+				$(".power").html("高速免费子弹: " + config.warcraft.powerLimit + "S");
+			}
+			else if(config.warcraft.powerLimit == 0){
+				config.num.interval = 5;
+				$(".power").html("");
+			}
+		}, 1000);
+		// 战机无敌事件
+		warcraft.invincible = setInterval(function(){
+			if(config.warcraft.invincible > 0){
+				warcraft.css({
+					padding: "5px",
+					border: "1px solid red",
+					borderRadius: "50%"
+				});
+				config.warcraft.invincible--;
+				$(".invincible").html("无敌时间: " + config.warcraft.invincible + "S");
+			}
+			else {
+				warcraft.css({
+					border: "none",
+					padding: "5px"
+				});
+				$(".invincible").html("");
+			}
+		}, 1000);
 	},
 	// 战机位置
 	warcraft: function(pos) {
@@ -231,12 +261,13 @@ var core = {
 		config.num.warcraftY = top + warcraft.height()/2;
 
 		var t = $(".gift").length;
+
 		// 我方获取礼物
 		for(var u=0; u<t; u++){
 			var gift = $(".gift").eq(u);
 			var bx4 = Math.abs(parseInt(warcraft.css("left")) - parseInt(gift.css("left"))),
 				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
-			if(bx4 <= 30 && by4 <= 20) {
+			if(bx4 <= 20 && by4 <= 30) {
 				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
 					config.num.bullet += 100;
 					$(".bulletCount").html("弹药: " + config.num.bullet);
@@ -253,45 +284,18 @@ var core = {
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费子弹和子弹频率加快
-					if(config.warcraft.limit > 0) {		// fixme 删除无效?
-						clearInterval(warcraft.powerTime);
-					}
 					config.num.interval = 2;
-					config.warcraft.limit = 10;
-					$(".status").html("状态: 高速免费子弹: " + config.warcraft.limit + "S");
-					warcraft.powerTime = setInterval(function(){
-						if(config.warcraft.limit > 0){
-							config.warcraft.limit--;
-							$(".status").html("状态: 高速免费子弹: " + config.warcraft.limit + "S");
-						}
-						if(config.warcraft.limit == 0){
-							config.num.interval = 5;
-							config.warcraft.limit = 0;
-							$(".status").html("");
-							clearInterval(warcraft.powerTime);
-						}
-					}, 1000);
+					config.warcraft.powerLimit += 10;
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_Invincible.png"){		// 无敌十秒
-					config.warcraft.invincible = true;
-					warcraft.css({
-						padding: "5px",
-						border: "1px solid red",
-						borderRadius: "50%"
-					});
-					setTimeout(function(){
-						config.warcraft.invincible = false;
-						warcraft.css({
-							border: "none",
-							padding: "5px"
-						})
-					}, 10000);
+					config.warcraft.invincible += 10;
+					gift.remove();
 				}
 			}
 		}
-
 	},
+
 	// 战机生命值
 	hp: function(hp) {
 		var HP = $(".hp");
@@ -515,6 +519,7 @@ var core = {
 				}
 			}
 		});
+
 	},
 	GameOver: function(){
 
@@ -522,6 +527,7 @@ var core = {
 		$(".bulletCount").remove();
 		$(".warcraft").remove();
 		$(".boomCount").remove();
+		$(".status").remove();
 		var tips = $("<div class='tips'></div>");
 		tips.html("<span>Game Over</span><span>分数:" + $(".score").html() + "</span><p>重来</p>");
 		setTimeout(function() {
@@ -551,6 +557,8 @@ var core = {
 			startScreen.draw();
 		});
 
+		clearInterval(core.warcraft.invincible);
+		clearInterval(core.warcraft.powerTime);
 		clearInterval(config.timer.bullet);
 		clearInterval(config.timer.enemy);
 	}

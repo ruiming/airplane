@@ -169,7 +169,7 @@ var startScreen = {
 				if(set[3] >= 3000){
 					set[3] -= 15;
 					set[4] -= 15;
-                    enemybulletlimit += 5;
+                    config.num.enemybulletlimit += 5;
 				}
 				else{
 					clearInterval(fast);
@@ -181,7 +181,7 @@ var startScreen = {
 			config.timer.enemy = setInterval(function() {
 				core.enemy({
 					speed: randomNum(set[3], set[4]),
-					left: randomNum(0, 577),
+					left: randomNum(10, 570),
 					top: -randomNum(30, 80),
 					type: randomNum(0, 20),
 					gift: randomNum(0, 100)

@@ -90,7 +90,7 @@ var config = {
 	},
 
 	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距750
-	mode: [null, 900, 150, 6500, 7500, 750, 1000],
+	mode: [null, 900, 150, 6500, 7500, 730, 1000],
 
 	num: {
 		count: 0,
@@ -101,7 +101,8 @@ var config = {
 		hp: 3,
 		interval: 5,
 		boom: 3,
-		giftSpeed: 4000
+		giftSpeed: 4000,
+        enemybulletlimit: 0
 	}
 
 };
@@ -168,6 +169,7 @@ var startScreen = {
 				if(set[3] >= 3000){
 					set[3] -= 15;
 					set[4] -= 15;
+                    enemybulletlimit += 5;
 				}
 				else{
 					clearInterval(fast);
@@ -499,7 +501,7 @@ var core = {
             case 12:
             case 13:
 				argument.exp = 1000;
-				argument.bulletlimit = 1500;
+				argument.bulletlimit = 1500 - config.num.enemybulletlimit;
 				argument.bullettype = 1;
 				argument.hp = 1;
 				argument.bulletSpeed = 2000;
@@ -508,7 +510,7 @@ var core = {
 			case 5:
             case 17:
 				argument.exp = 1200;
-				argument.bulletlimit = 1200;
+				argument.bulletlimit = 1200 - config.num.enemybulletlimit;
 				argument.bullettype = 1;
 				argument.hp = 1;
 				argument.bulletSpeed = 3000;
@@ -517,10 +519,10 @@ var core = {
             case 18:
             case 19:
 				argument.exp = 2000;
-				argument.bulletlimit = 1800;
+				argument.bulletlimit = 1700 - config.num.enemybulletlimit;
 				argument.bullettype = 2;
 				argument.hp = 2;
-				argument.bulletSpeed = 4000;
+				argument.bulletSpeed = 3800;
 				break;
 			case 7:							// J10，血多，子弹频率慢，射速快
 			case 8:
@@ -528,7 +530,7 @@ var core = {
             case 15:
             case 16:
 				argument.exp = 1500;
-				argument.bulletlimit = 1600;
+				argument.bulletlimit = 1600 - config.num.enemybulletlimit;
 				argument.bullettype = 1;
 				argument.hp = 2;
 				argument.bulletSpeed = 2000;
@@ -536,14 +538,14 @@ var core = {
 			case 9:							// J31，血多
 			case 10:
 				argument.exp = 2500;
-				argument.bulletlimit = 1700;
+				argument.bulletlimit = 1700 - config.num.enemybulletlimit;
 				argument.bullettype = 1;
 				argument.hp = 3;
 				argument.bulletSpeed = 2800;
 				break;
 			case 11:						// T50,五弹，射速快，频率高
 				argument.exp = 5000;
-				argument.bulletlimit = 1500;
+				argument.bulletlimit = 1300 - config.num.enemybulletlimit;
 				argument.bullettype = 3;
 				argument.hp = 4;
 				argument.bulletSpeed = 2200;

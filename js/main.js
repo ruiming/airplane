@@ -255,7 +255,6 @@ var core = {
 				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费子弹和子弹频率加快
 					if(config.warcraft.limit > 0) {		// fixme 删除无效?
 						clearInterval(warcraft.powerTime);
-						clearTimeout(warcraft.powerTimeOut);
 					}
 					config.num.interval = 2;
 					config.warcraft.limit = 10;
@@ -265,13 +264,13 @@ var core = {
 							config.warcraft.limit--;
 							$(".status").html("状态: 高速免费子弹: " + config.warcraft.limit + "S");
 						}
+						if(config.warcraft.limit == 0){
+							config.num.interval = 5;
+							config.warcraft.limit = 0;
+							$(".status").html("");
+							clearInterval(warcraft.powerTime);
+						}
 					}, 1000);
-					warcraft.powerTimeOut = setTimeout(function(){
-						config.num.interval = 5;
-						config.warcraft.limit = 0;
-						$(".status").html("");
-						clearInterval(warcraft.powerTime);
-					}, 10000);
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_Invincible.png"){		// 无敌十秒

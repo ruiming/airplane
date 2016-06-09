@@ -114,7 +114,8 @@ body {
 }
 #box .hp ,
 #box .bulletCount,
-#box .boomCount {
+#box .boomCount,
+#box .status{
 	color: red;
 	top: 770px;
 	line-height: 30px;
@@ -130,7 +131,9 @@ body {
 #box .boomCount {
 	padding-left: 220px;
 }
-
+#box .status {
+	padding-left: 320px;
+}
 #box .score {
 	width: 220px; 
 	height: 30px; 

@@ -58,7 +58,8 @@ var config = {
 		hp: 3,
 		type: "images/J-10/J-10.png",
 		boom: false,
-		invincible: false
+		invincible: false,
+		limit: 0
 	},
 
 	timer: {
@@ -162,7 +163,7 @@ var startScreen = {
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
 					type: randomNum(1, 3),
-					gift: randomNum(0, 20)	// todo Change Me
+					gift: randomNum(4, 6)	// todo Change Me
 				})
 			}, set[5])
 		})
@@ -194,8 +195,12 @@ var core = {
 		boomCount.html("导弹: " + config.num.boom);
 		game.append(boomCount);
 
+		var status = $("<div class='status'></div>");
+		game.append(status);
+
 		var score = $("<div class='score'>0</div>");
 		game.append(score);
+
 	},
 	// 战机位置
 	warcraft: function(pos) {
@@ -248,9 +253,24 @@ var core = {
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费子弹和子弹频率加快
+					if(config.warcraft.limit > 0) {		// fixme 删除无效?
+						clearInterval(warcraft.powerTime);
+						clearTimeout(warcraft.powerTimeOut);
+					}
 					config.num.interval = 2;
-					setTimeout(function(){
+					config.warcraft.limit = 10;
+					$(".status").html("状态: 高速免费子弹: " + config.warcraft.limit + "S");
+					warcraft.powerTime = setInterval(function(){
+						if(config.warcraft.limit > 0){
+							config.warcraft.limit--;
+							$(".status").html("状态: 高速免费子弹: " + config.warcraft.limit + "S");
+						}
+					}, 1000);
+					warcraft.powerTimeOut = setTimeout(function(){
 						config.num.interval = 5;
+						config.warcraft.limit = 0;
+						$(".status").html("");
+						clearInterval(warcraft.powerTime);
 					}, 10000);
 					gift.remove();
 				}

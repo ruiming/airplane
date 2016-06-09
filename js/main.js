@@ -342,14 +342,15 @@ var core = {
 		var bullet = $("<div class='bullet'></div>");
 		var bullet2 = $("<div class='bullet'></div>");
 		var bullet3 = $("<div class='bullet'></div>");
-		if(type == 0){									// 单弹
+		if(type == 1){									// 单弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
 				top: pos[1] - bullet.height()/2
 			});
-			bullet.stop().animate(	// 修正
+			bullet.stop().animate(
 				{top: config.num.warcraftY - game.height()},
 				speed,
+				'linear',
 				function(){
 					bullet.remove();
 				}
@@ -359,7 +360,7 @@ var core = {
 				config.num.bullet--;
 			}
 		}
-		else if(type == 1){								// 双弹
+		else if(type == 2){								// 双弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 - 5,
 				top: pos[1] - bullet.height()/2
@@ -376,6 +377,7 @@ var core = {
 			bullet.stop().animate(	// 修正
 				{top: config.num.warcraftY - game.height()},
 				speed,
+				'linear',
 				function(){
 					bullet.remove();
 				}
@@ -383,12 +385,13 @@ var core = {
 			bullet2.stop().animate(	// 修正
 				{top: config.num.warcraftY - game.height()},
 				speed,
+				'linear',
 				function(){
 					bullet2.remove();
 				}
 			)
 		}
-		else if(type == 2){								// 三弹
+		else if(type == 0){								// 三弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
 				top: pos[1] - bullet.height()/2
@@ -410,6 +413,7 @@ var core = {
 			bullet.stop().animate(	// 修正
 				{top: config.num.warcraftY - game.height()},
 				speed,
+				'linear',
 				function(){
 					bullet.remove();
 				}
@@ -420,6 +424,7 @@ var core = {
 					left: config.num.warcraftX - game.height()*Math.tan(Math.PI/20)
 				},
 				speed,
+				'linear',
 				function(){
 					bullet2.remove();
 				}
@@ -430,6 +435,7 @@ var core = {
 					left: config.num.warcraftX + game.height()*Math.tan(Math.PI/20)
 				},
 				speed,
+				'linear',
 				function(){
 					bullet3.remove();
 				}
@@ -541,7 +547,7 @@ var core = {
 				enemyBullet2.stop().animate(
 					{
 						top: game.height() + y,
-						left: left - 3000*Math.tan(Math.PI/15)
+						left: left - 3000*Math.tan(Math.PI/45)
 					},
 					argument.bulletSpeed,
 					'linear',
@@ -553,7 +559,7 @@ var core = {
 				enemyBullet3.stop().animate(
 					{
 						top: game.height() + y,
-						left: left + 3000*Math.tan(Math.PI/15)
+						left: left + 3000*Math.tan(Math.PI/45)
 					},
 					argument.bulletSpeed,
 					'linear',

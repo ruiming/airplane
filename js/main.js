@@ -347,7 +347,7 @@ var core = {
 		var bullet = $("<div class='bullet'></div>");
 		var bullet2 = $("<div class='bullet'></div>");
 		var bullet3 = $("<div class='bullet'></div>");
-		if(type == 1){									// 单弹
+		if(type == 0){									// 单弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
 				top: pos[1] - bullet.height()/2
@@ -365,7 +365,7 @@ var core = {
 				config.num.bullet--;
 			}
 		}
-		else if(type == 2){								// 双弹
+		else if(type == 1){								// 双弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 - 5,
 				top: pos[1] - bullet.height()/2
@@ -396,7 +396,7 @@ var core = {
 				}
 			)
 		}
-		else if(type == 0){								// 三弹
+		else if(type == 2){								// 三弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
 				top: pos[1] - bullet.height()/2
@@ -500,10 +500,10 @@ var core = {
 				argument.hp = 3;
 				argument.bulletSpeed = 2800;
 				break;
-			case 11:						// T50,三弹，射速快，频率高
+			case 11:						// T50,五弹，射速快，频率高
 				argument.exp = 5000;
 				argument.bulletlimit = 1000;
-				argument.bulletype = 2;
+				argument.bullettype = 3;
 				argument.hp = 4;
 				argument.bulletSpeed = 2200;
 				break;
@@ -533,8 +533,10 @@ var core = {
 			var enemyBullet = $("<div class='enemyBullet'></div>");
 			var enemyBullet2 = $("<div class='enemyBullet'></div>");
 			var enemyBullet3 = $("<div class='enemyBullet'></div>");
+			var enemyBullet4 = $("<div class='enemyBullet'></div>");
+			var enemyBullet5 = $("<div class='enemyBullet'></div>");
 
-			if(argument.bullettype == 1) {
+			if(argument.bullettype == 1) {				// 单弹
 				enemyBullet.css({
 					left: x - enemyBullet.width()/2 + 5,
 					top: y + enemyBullet.height()*3
@@ -550,7 +552,7 @@ var core = {
 				);
 				game.append(enemyBullet);
 			}
-			else{
+			else if(argument.bullettype == 2){				// 三弹
 				enemyBullet.css({
 					left: x - enemyBullet.width()/2 + 5,
 					top: y + enemyBullet.height()*2
@@ -599,6 +601,90 @@ var core = {
 				game.append(enemyBullet);
 				game.append(enemyBullet2);
 				game.append(enemyBullet3);
+			}
+			else if(argument.bullettype == 3){				// 五弹
+				enemyBullet.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet2.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet3.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet4.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet5.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet.stop().animate(
+					{top: game.height() + y},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet2.stop().animate(
+					{
+						top: game.height() + y,
+						left: left - 3000*Math.tan(Math.PI/45)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet2.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet3.stop().animate(
+					{
+						top: game.height() + y,
+						left: left + 3000*Math.tan(Math.PI/45)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet3.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet4.stop().animate(
+					{
+						top: game.height() + y,
+						left: left - 3000*Math.tan(Math.PI/25)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet4.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet5.stop().animate(
+					{
+						top: game.height() + y,
+						left: left + 3000*Math.tan(Math.PI/25)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet5.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				game.append(enemyBullet);
+				game.append(enemyBullet2);
+				game.append(enemyBullet3);
+				game.append(enemyBullet4);
+				game.append(enemyBullet5);
 			}
 		}, argument.bulletlimit);
 

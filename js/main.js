@@ -49,7 +49,7 @@ var config = {
 	name: "渣渣",
 
 	type: [
-		// 四架F15，两架F16，一架F35，两架J10，两架J31，一架T50
+		// 四架F15，两架F16，一架F35，两架J10，两架J31，一架恐怖T50
 		"images/enemy/F15.png",		// 0
 		"images/enemy/F15.png",		// 1
 		"images/enemy/F15.png",		// 2
@@ -61,7 +61,16 @@ var config = {
 		"images/enemy/J-10.png",	// 8
 		"images/enemy/J-31.png",	// 9
 		"images/enemy/J-31.png",	// 10
-		"images/enemy/T50.png"		// 11
+		"images/enemy/T50.png",		// 11
+        // 补充 --
+        "images/enemy/F15.png",     // 12
+        "images/enemy/F15.png",     // 13
+        "images/enemy/J-10.png",    // 14
+        "images/enemy/J-10.png",    // 15
+        "images/enemy/J-10.png",    // 16
+        "images/enemy/F16.png",     // 17
+        "images/enemy/F35.png",     // 18
+        "images/enemy/F35.png"      // 19
 	],
 
 	warcraft: {
@@ -70,20 +79,22 @@ var config = {
 		boom: false,
 		invincible: 0,
 		powerLimit: 0,
-		bulletType: 0
+		bulletType: 0,
+        level: 1
 	},
 
 	timer: {
 		bullet: null,
-		enemy: null
+		enemy: null,
+        levelup: null
 	},
 
 	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距700
-	mode: [null, 900, 150, 6500, 7500, 700, 1000],
+	mode: [null, 900, 150, 6500, 7500, 800, 1000],
 
 	num: {
 		count: 0,
-		bullet: 1000,
+		bullet: 2000,
 		warcraftX: 0,
 		warcraftY: 0,
 		score: 0,
@@ -137,7 +148,7 @@ var startScreen = {
 				// 发射子弹
 				if(down[17]  && config.num.bullet > 0 && config.warcraft.hp > 0) {	// ctrl
 					if(up % config.num.interval == 1){
-						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY], config.warcraft.bulletType);
+						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
 					}
 					up ++;
 				}
@@ -174,10 +185,29 @@ var startScreen = {
 					speed: randomNum(set[3], set[4]),
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
-					type: randomNum(0, 12),
+					type: randomNum(0, 20),
 					gift: randomNum(0, 100)
 				})
-			}, set[5])
+			}, set[5]);
+
+            // 升级
+            config.timer.levelup = setInterval(function(){
+                if(config.num.score < 200000) {
+                    config.warcraft.level = 1;
+                }
+                else if(config.num.score >= 200000 && config.num.score <= 500000) {
+                    config.warcraft.level = 2;
+                    $(".level").html("LV.2");
+                    config.warcraft.bulletType = 1;
+                    config.mode[1] = 700;       // 子弹加快
+                }
+                else if(config.num.score > 500000) {
+                    config.warcraft.level = 3;
+                    $(".level").html("LV.3");
+                    config.warcraft.bulletType = 2;
+                    config.mode[1] = 600;
+                }
+            },100)
 		})
 	},
 	remove: function() {
@@ -216,6 +246,9 @@ var core = {
 		var score = $("<div class='score'>0</div>");
 		game.append(score);
 
+        var level = $("<div class='level'>LV.0</div>");
+        game.append(level);
+        
 		// 战机高速免费子弹事件
 		warcraft.powerTime = setInterval(function(){
 			if(config.warcraft.powerLimit > 0){
@@ -284,7 +317,7 @@ var core = {
 				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
 			if(bx4 <= 20 && by4 <= 30) {
 				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
-					config.num.bullet += 100;
+					config.num.bullet += 500;
 					$(".bulletCount").html("弹药: " + config.num.bullet);
 					gift.remove();
 				}
@@ -331,7 +364,7 @@ var core = {
 		}
 	},
 	// 战机子弹
-	bullet: function(speed, pos, type) {
+	bullet: function(speed, pos) {
 		/* 战机子弹运动规律,游戏宽高W,H，战机偏移X,Y
 		 * 单弹:
 		 *    弹药top: Y-H   -> 弹药总运行距离：Y + abs( Y - H ) = H  -> 均匀速度运动
@@ -347,6 +380,7 @@ var core = {
 		var bullet = $("<div class='bullet'></div>");
 		var bullet2 = $("<div class='bullet'></div>");
 		var bullet3 = $("<div class='bullet'></div>");
+        var type = config.warcraft.bulletType;
 		if(type == 0){									// 单弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
@@ -463,6 +497,8 @@ var core = {
 			case 1:
 			case 2:
 			case 3:
+            case 12:
+            case 13:
 				argument.exp = 1000;
 				argument.bulletlimit = 1500;
 				argument.bullettype = 1;
@@ -471,6 +507,7 @@ var core = {
 				break;
 			case 4:							// F16，子弹频率稍快
 			case 5:
+            case 17:
 				argument.exp = 1200;
 				argument.bulletlimit = 1200;
 				argument.bullettype = 1;
@@ -478,6 +515,8 @@ var core = {
 				argument.bulletSpeed = 3000;
 				break;
 			case 6:							// F35，三弹，血多，子弹频率稍慢，射速慢
+            case 18:
+            case 19:
 				argument.exp = 2000;
 				argument.bulletlimit = 1800;
 				argument.bullettype = 2;
@@ -486,6 +525,9 @@ var core = {
 				break;
 			case 7:							// J10，血多，子弹频率慢，射速快
 			case 8:
+            case 14:
+            case 15:
+            case 16:
 				argument.exp = 1500;
 				argument.bulletlimit = 1600;
 				argument.bullettype = 1;
@@ -502,7 +544,7 @@ var core = {
 				break;
 			case 11:						// T50,五弹，射速快，频率高
 				argument.exp = 5000;
-				argument.bulletlimit = 1000;
+				argument.bulletlimit = 1500;
 				argument.bullettype = 3;
 				argument.hp = 4;
 				argument.bulletSpeed = 2200;
@@ -820,11 +862,33 @@ var core = {
 					config.warcraft.hp--;
 					core.hp(config.warcraft.hp);
 				}
-
+                if(argument.gift > 0 && argument.gift < 10) {
+                    setTimeout(function() {
+                        var gift = $("<img>");
+                        gift.addClass('gift');
+                        gift.css({
+                            left: x,
+                            top: y
+                        });
+                        gift.attr("src", config.resource[argument.gift]);
+                        gift.stop().animate(
+                            {top: y + game.height()},
+                            config.num.giftSpeed,
+                            'linear',
+                            function(){
+                                gift.remove();
+                            }
+                        );
+                        game.append(gift);
+                    }, 300);
+                }
 				oEnemy.css("background", "url('img/boom.png')");
 				setTimeout(function() {
 					oEnemy.remove();
 				}, 300);
+
+                config.num.score += argument.exp;
+                game.find($(".score")).html(config.num.score);
 
 				clearInterval(oEnemy.bulletTimer);
 				clearInterval(oEnemy.timer);
@@ -848,6 +912,7 @@ var core = {
 		$(".bulletCount").remove();
 		$(".warcraft").remove();
 		$(".boomCount").remove();
+        $(".level").remove();
 		$(".status").remove();
 		var tips = $("<div class='tips'></div>");
 		tips.html("<span>Game Over</span><span>分数:" + $(".score").html() + "</span><p>重来</p>");
@@ -873,6 +938,11 @@ var core = {
 			config.num.score = 0;
 			config.warcraft.hp = 3;
 			config.num.interval = 5;
+            config.num.boom = 3;
+            config.num.bullet = 1000;
+            config.warcraft.level = 0;
+            config.warcraft.bulletType = 0;
+            config.mode = [null, 900, 150, 6500, 7500, 800, 1000];
 			setList();
 			startScreen.remove();
 			startScreen.draw();
@@ -882,6 +952,7 @@ var core = {
 		clearInterval(core.warcraft.powerTime);
 		clearInterval(config.timer.bullet);
 		clearInterval(config.timer.enemy);
+        clearInterval(config.timer.levelup);
 	}
 };
 var randomNum = function(a, b){

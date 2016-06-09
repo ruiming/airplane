@@ -50,8 +50,13 @@ var config = {
 
 	type: [
 		"images/enemy/F15.png",
+		"images/enemy/F15.png",
+		"images/enemy/F15.png",
+		"images/enemy/F15.png",
+		"images/enemy/F16.png",
 		"images/enemy/F16.png",
 		"images/enemy/F35.png"
+
 	],
 
 	warcraft: {
@@ -69,7 +74,7 @@ var config = {
 	},
 
 	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距700
-	mode: [null, 900, 150, 9000, 9500, 700, 1000],
+	mode: [null, 900, 150, 6500, 7500, 700, 1000],
 
 	num: {
 		count: 0,
@@ -79,7 +84,8 @@ var config = {
 		score: 0,
 		hp: 3,
 		interval: 5,
-		boom: 3
+		boom: 3,
+		giftSpeed: 4000
 	}
 
 };
@@ -163,7 +169,7 @@ var startScreen = {
 					speed: randomNum(set[3], set[4]),
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
-					type: randomNum(1, 3),
+					type: randomNum(0, 7),
 					gift: randomNum(0, 100)
 				})
 			}, set[5])
@@ -299,7 +305,6 @@ var core = {
 			}
 		}
 	},
-
 	// 战机生命值
 	hp: function(hp) {
 		var HP = $(".hp");
@@ -444,16 +449,29 @@ var core = {
 		// 经验值
 		switch(argument.type){
 			case 0:							// F15
+			case 1:
+			case 2:
+			case 3:
 				argument.exp = 1000;
+				argument.bulletlimit = 1400;
+				argument.bullettype = 1;
 				argument.hp = 1;
+				argument.bulletSpeed = 3000;
 				break;
-			case 1:							// F16
+			case 4:							// F16
+			case 5:
 				argument.exp = 1500;
+				argument.bulletlimit = 1100;
+				argument.bullettype = 1;
 				argument.hp = 1;
+				argument.bulletSpeed = 3000;
 				break;
-			case 2:							// F35
+			case 6:							// F35
 				argument.exp = 3000;
+				argument.bulletlimit = 2000;
+				argument.bullettype = 2;
 				argument.hp = 2;
+				argument.bulletSpeed = 3000;
 				break;
 		}
 		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
@@ -464,8 +482,9 @@ var core = {
 
 			oEnemy.appendTo(game);
 			oEnemy.stop().animate(
-				{top: 1000},
+				{top: game.height()},
 				speed,
+				'linear',
 				function(){
 					oEnemy.remove();
 					clearInterval(oEnemy.timer);
@@ -477,24 +496,77 @@ var core = {
 			var x = parseInt(oEnemy.css("left")) + 6,
 				y = parseInt(oEnemy.css("top")) + 15;
 
-
 			var enemyBullet = $("<div class='enemyBullet'></div>");
+			var enemyBullet2 = $("<div class='enemyBullet'></div>");
+			var enemyBullet3 = $("<div class='enemyBullet'></div>");
 
-			enemyBullet.css({
-				left: x - enemyBullet.width()/2 + 5,
-				top: y + enemyBullet.height()*2
-			});
-
-			game.append(enemyBullet);
-			enemyBullet.stop().animate(
-				{top: 3000},
-				speed/2.5,
-				function() {
-					enemyBullet.remove();
-					clearInterval(oEnemy.bulletTimer);
-				}
-			)
-		}, 1400);
+			if(argument.bullettype == 1) {
+				enemyBullet.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*3
+				});
+				enemyBullet.stop().animate(
+					{top: game.height() + y},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				game.append(enemyBullet);
+			}
+			else{
+				enemyBullet.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet2.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet3.css({
+					left: x - enemyBullet.width()/2 + 5,
+					top: y + enemyBullet.height()*2
+				});
+				enemyBullet.stop().animate(
+					{top: game.height() + y},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet2.stop().animate(
+					{
+						top: game.height() + y,
+						left: left - 3000*Math.tan(Math.PI/15)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet2.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				enemyBullet3.stop().animate(
+					{
+						top: game.height() + y,
+						left: left + 3000*Math.tan(Math.PI/15)
+					},
+					argument.bulletSpeed,
+					'linear',
+					function() {
+						enemyBullet3.remove();
+						clearInterval(oEnemy.bulletTimer);
+					}
+				);
+				game.append(enemyBullet);
+				game.append(enemyBullet2);
+				game.append(enemyBullet3);
+			}
+		}, argument.bulletlimit);
 
 		var hurt = true;
 		// 碰撞检测
@@ -509,7 +581,7 @@ var core = {
 			}
 			if(config.warcraft.boom&&hurt){
 				hurt = false;
-				argument.hp-=1;
+				argument.hp-=3;
 				// 3条血下秒杀
 				if(argument.hp <= 0){
 					oEnemy.css("background", "url('img/boom.png')");
@@ -523,8 +595,9 @@ var core = {
 							});
 							gift.attr("src", config.resource[argument.gift]);
 							gift.stop().animate(
-								{top: 1500},
-								speed,
+								{top: y + game.height()},
+								config.num.giftSpeed,
+								'linear',
 								function(){
 									gift.remove();
 								}
@@ -574,8 +647,9 @@ var core = {
 								});
 								gift.attr("src", config.resource[argument.gift]);
 								gift.stop().animate(
-									{top: 1500},
-									speed,
+									{top: y + game.height()},
+									config.num.giftSpeed,
+									'linear',
 									function(){
 										gift.remove();
 									}

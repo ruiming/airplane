@@ -91,6 +91,7 @@ body {
 	position: absolute;
 	z-index: 2;
 	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
 }
 #box .gift {
 	width:30px;
@@ -104,6 +105,7 @@ body {
 	position: absolute;
 	z-index: 2;
 	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
 }
 #box .enemy { 
 	width:30px;
@@ -111,6 +113,7 @@ body {
 	position: absolute; 
 	z-index: 3;
 	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
 }
 #box .hp ,
 #box .bulletCount,

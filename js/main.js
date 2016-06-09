@@ -445,12 +445,15 @@ var core = {
 		switch(argument.type){
 			case 0:							// F15
 				argument.exp = 1000;
+				argument.hp = 1;
 				break;
 			case 1:							// F16
 				argument.exp = 1500;
+				argument.hp = 1;
 				break;
 			case 2:							// F35
 				argument.exp = 3000;
+				argument.hp = 2;
 				break;
 		}
 		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
@@ -493,64 +496,32 @@ var core = {
 			)
 		}, 1400);
 
+		var hurt = true;
 		// 碰撞检测
 		oEnemy.timer = setInterval(function() {
 			var x = parseInt(oEnemy.css("left")) + 12,
 				y = parseInt(oEnemy.css("top")) + 15,
 				l = $(".bullet").length,
 				k = $(".enemyBullet").length;
-
-			if(config.warcraft.boom){
-				oEnemy.css("background", "url('img/boom.png')");
-				if(argument.gift > 0 && argument.gift < 10) {
-					setTimeout(function() {
-						var gift = $("<img>");
-						gift.addClass('gift');
-						gift.css({
-							left: x,
-							top: y
-						});
-						gift.attr("src", config.resource[argument.gift]);
-						gift.stop().animate(
-							{top: 1500},
-							speed,
-							function(){
-								gift.remove();
-							}
-						);
-						game.append(gift);
-					}, 300);
-				}
-				setTimeout(function() {
-					oEnemy.remove();
-				}, 300);
-				clearInterval(oEnemy.bulletTimer);
-				clearInterval(oEnemy.timer);
-				config.num.score += argument.exp;
-				game.find($(".score")).html(config.num.score);
-
-				for(var w=0; w<k; w++){
-					$(".enemyBullet").eq(w).remove();
-				}
+			// 导弹爆炸
+			if(!config.warcraft.boom){
+				hurt = true;
 			}
-
-			// 敌机与我方子弹触碰
-			for(var i=0; i<l; i++){
-				var bx = Math.abs( x - parseInt($(".bullet").eq(i).css("left"))),
-					by = Math.abs( y - parseInt($(".bullet").eq(i).css("top")));
-
-				if(bx <= 14 && by <= 20) {
-					// 掉礼物
+			if(config.warcraft.boom&&hurt){
+				hurt = false;
+				argument.hp-=1;
+				// 3条血下秒杀
+				if(argument.hp <= 0){
 					oEnemy.css("background", "url('img/boom.png')");
 					if(argument.gift > 0 && argument.gift < 10) {
 						setTimeout(function() {
 							var gift = $("<img>");
-								gift.addClass('gift');
-								gift.css({
-									left: x,
-									top: y
-								});
-								gift.attr("src", config.resource[argument.gift]);
+							gift.addClass('gift');
+							gift.css({
+								left: x,
+								top: y
+							});
+							gift.attr("src", config.resource[argument.gift]);
 							gift.stop().animate(
 								{top: 1500},
 								speed,
@@ -564,11 +535,63 @@ var core = {
 					setTimeout(function() {
 						oEnemy.remove();
 					}, 300);
-					$(".bullet").eq(i).remove();
 					clearInterval(oEnemy.bulletTimer);
 					clearInterval(oEnemy.timer);
 					config.num.score += argument.exp;
 					game.find($(".score")).html(config.num.score);
+
+					for(var w=0; w<k; w++){
+						$(".enemyBullet").eq(w).remove();
+					}
+				}
+			}
+
+			// 敌机与我方子弹触碰
+			for(var i=0; i<l; i++){
+				var bx = Math.abs( x - parseInt($(".bullet").eq(i).css("left"))),
+					by = Math.abs( y - parseInt($(".bullet").eq(i).css("top")));
+
+				if(bx <= 14 && by <= 20) {
+					argument.hp--;
+					console.log(argument.hp);
+					if(argument.hp > 0){
+						$(".bullet").eq(i).remove();
+						oEnemy.css("background", "url('img/boom.png')");
+						setTimeout(function() {
+							oEnemy.css("background", "");
+						}, 300);
+					}
+					else {
+						// 掉礼物
+						oEnemy.css("background", "url('img/boom.png')");
+						if(argument.gift > 0 && argument.gift < 10) {
+							setTimeout(function() {
+								var gift = $("<img>");
+								gift.addClass('gift');
+								gift.css({
+									left: x,
+									top: y
+								});
+								gift.attr("src", config.resource[argument.gift]);
+								gift.stop().animate(
+									{top: 1500},
+									speed,
+									function(){
+										gift.remove();
+									}
+								);
+								game.append(gift);
+							}, 300);
+						}
+						setTimeout(function() {
+							oEnemy.remove();
+						}, 300);
+						$(".bullet").eq(i).remove();
+						clearInterval(oEnemy.bulletTimer);
+						clearInterval(oEnemy.timer);
+						config.num.score += argument.exp;
+						game.find($(".score")).html(config.num.score);
+					}
 				}
 			}
 

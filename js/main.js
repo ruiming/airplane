@@ -116,14 +116,7 @@ var startScreen = {
 
 		game.append(list);
 
-		var difficulty;
-
-		if(localStorage["name"] != undefined){
-			difficulty = $("<div class='difficulty'><a href='javascript:void(0)'>开始游戏</a></div>");
-		}
-		else {
-			difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");
-		}
+		var difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");
 
 		game.append(difficulty);
 

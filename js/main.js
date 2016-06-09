@@ -526,8 +526,8 @@ var core = {
 				}, 300);
 				clearInterval(oEnemy.bulletTimer);
 				clearInterval(oEnemy.timer);
-				config.num.score++;
-				game.find($(".score")).html(config.num.score*1000);
+				config.num.score += argument.exp;
+				game.find($(".score")).html(config.num.score);
 
 				for(var w=0; w<k; w++){
 					$(".enemyBullet").eq(w).remove();
@@ -567,8 +567,8 @@ var core = {
 					$(".bullet").eq(i).remove();
 					clearInterval(oEnemy.bulletTimer);
 					clearInterval(oEnemy.timer);
-					config.num.score++;
-					game.find($(".score")).html(config.num.score*1000);
+					config.num.score += argument.exp;
+					game.find($(".score")).html(config.num.score);
 				}
 			}
 

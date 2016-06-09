@@ -789,7 +789,6 @@ var core = {
 
 				if(bx <= 14 && by <= 20) {
 					argument.hp--;
-					console.log(argument.hp);
 					if(argument.hp > 0){
 						$(".bullet").eq(i).remove();
 						oEnemy.css("background", "url('img/boom.png')");

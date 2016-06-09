@@ -59,7 +59,8 @@ var config = {
 		type: "images/J-10/J-10.png",
 		boom: false,
 		invincible: 0,
-		powerLimit: 0
+		powerLimit: 0,
+		bulletType: 0
 	},
 
 	timer: {
@@ -125,7 +126,7 @@ var startScreen = {
 				// 发射子弹
 				if(down[17]  && config.num.bullet > 0 && config.warcraft.hp > 0) {	// ctrl
 					if(up % config.num.interval == 1){
-						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
+						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY], config.warcraft.bulletType);
 					}
 					up ++;
 				}
@@ -163,7 +164,7 @@ var startScreen = {
 					left: randomNum(0, 577),
 					top: -randomNum(30, 80),
 					type: randomNum(1, 3),
-					gift: randomNum(4, 6)	// todo Change Me
+					gift: randomNum(0, 100)
 				})
 			}, set[5])
 		})
@@ -182,7 +183,10 @@ var core = {
 	draw: function() {
 		var warcraft = $("<div class='warcraft'><img src='" + config.warcraft.type + "'></div>");
 		game.append(warcraft);
-
+		
+		var lv = $("<div class='lv'></div>");
+		game.append(lv);
+		
 		var hp = $("<div class='hp'></div>");
 		hp.html("生命值: " + config.warcraft.hp);
 		game.append(hp);
@@ -283,7 +287,7 @@ var core = {
 					$(".hp").html("生命值: " + config.warcraft.hp);
 					gift.remove();
 				}
-				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费子弹和子弹频率加快
+				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费高速子弹十秒
 					config.num.interval = 2;
 					config.warcraft.powerLimit += 10;
 					gift.remove();
@@ -317,29 +321,118 @@ var core = {
 		}
 	},
 	// 战机子弹
-	bullet: function(speed, pos) {
+	bullet: function(speed, pos, type) {
+		/* 战机子弹运动规律,游戏宽高W,H，战机偏移X,Y
+		 * 单弹:
+		 *    弹药top: Y-H   -> 弹药总运行距离：Y + abs( Y - H ) = H  -> 均匀速度运动
+		 *  双弹:
+		 *    同上
+		 *  三弹:
+		 *    中间同上
+		 *    左:
+		 *      弹药left: X - H * Math.tan(Math.PI/20)
+		 *    右：
+		 *      弹药left: 2X - H * Math.tan(Math.PI/20)
+		 */
 		var bullet = $("<div class='bullet'></div>");
-		game.append(bullet);
-
-		bullet.css({
-			left: pos[0] - bullet.width()/2 + 5,
-			top: pos[1] - bullet.height()/2
-		});
-
-		if(config.warcraft.powerLimit == 0) {
-			config.num.bullet--;
+		var bullet2 = $("<div class='bullet'></div>");
+		var bullet3 = $("<div class='bullet'></div>");
+		if(type == 0){									// 单弹
+			bullet.css({
+				left: pos[0] - bullet.width()/2 + 3,
+				top: pos[1] - bullet.height()/2
+			});
+			bullet.stop().animate(	// 修正
+				{top: config.num.warcraftY - game.height()},
+				speed,
+				function(){
+					bullet.remove();
+				}
+			);
+			game.append(bullet);
+			if(config.warcraft.powerLimit == 0) {
+				config.num.bullet--;
+			}
 		}
-
+		else if(type == 1){								// 双弹
+			bullet.css({
+				left: pos[0] - bullet.width()/2 - 5,
+				top: pos[1] - bullet.height()/2
+			});
+			bullet2.css({
+				left: pos[0] - bullet.width()/2 + 10,
+				top: pos[1] - bullet.height()/2
+			});
+			game.append(bullet);
+			game.append(bullet2);
+			if(config.warcraft.powerLimit == 0) {
+				config.num.bullet-=2;
+			}
+			bullet.stop().animate(	// 修正
+				{top: config.num.warcraftY - game.height()},
+				speed,
+				function(){
+					bullet.remove();
+				}
+			);
+			bullet2.stop().animate(	// 修正
+				{top: config.num.warcraftY - game.height()},
+				speed,
+				function(){
+					bullet2.remove();
+				}
+			)
+		}
+		else if(type == 2){								// 三弹
+			bullet.css({
+				left: pos[0] - bullet.width()/2 + 3,
+				top: pos[1] - bullet.height()/2
+			});
+			bullet2.css({
+				left: pos[0] - bullet.width()/2+ 3,
+				top: pos[1] - bullet.height()/2
+			});
+			bullet3.css({
+				left: pos[0] - bullet.width()/2 + 3,
+				top: pos[1] - bullet.height()/2
+			});
+			game.append(bullet);
+			game.append(bullet2);
+			game.append(bullet3);
+			if(config.warcraft.powerLimit == 0) {
+				config.num.bullet-=3;
+			}
+			bullet.stop().animate(	// 修正
+				{top: config.num.warcraftY - game.height()},
+				speed,
+				function(){
+					bullet.remove();
+				}
+			);
+			bullet2.stop().animate(	// 修正 X - H * Math.tan(Math.PI/60)
+				{
+					top: config.num.warcraftY - game.height(),
+					left: config.num.warcraftX - game.height()*Math.tan(Math.PI/20)
+				},
+				speed,
+				function(){
+					bullet2.remove();
+				}
+			);
+			bullet3.stop().animate(	// 修正
+				{
+					top: config.num.warcraftY - game.height(),
+					left: config.num.warcraftX + game.height()*Math.tan(Math.PI/20)
+				},
+				speed,
+				function(){
+					bullet3.remove();
+				}
+			)
+		}
 		var bulletCount = $(".bulletCount");
 			bulletCount.html("弹药: " + config.num.bullet);
 
-		bullet.stop().animate(	// 修正
-			{top: -4000},
-			speed*4,
-			function(){
-				bullet.remove();
-			}
-		)
 	},
 	// 敌机生成
 	enemy: function(argument) {
@@ -348,7 +441,18 @@ var core = {
 			top = argument.top,
 			type = argument.type,
 			gift = argument.type;
-
+		// 经验值
+		switch(argument.type){
+			case 0:							// F15
+				argument.exp = 1000;
+				break;
+			case 1:							// F16
+				argument.exp = 1500;
+				break;
+			case 2:							// F35
+				argument.exp = 3000;
+				break;
+		}
 		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
 			oEnemy.css({
 				left: left,

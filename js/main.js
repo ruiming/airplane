@@ -510,7 +510,7 @@ var core = {
 			case 5:
             case 17:
 				argument.exp = 1200;
-				argument.bulletlimit = 1200 - config.num.enemybulletlimit;
+				argument.bulletlimit = 1400 - config.num.enemybulletlimit;
 				argument.bullettype = 1;
 				argument.hp = 1;
 				argument.bulletSpeed = 3000;
@@ -565,6 +565,7 @@ var core = {
 				function(){
 					oEnemy.remove();
 					clearInterval(oEnemy.timer);
+					clearInterval(oEnemy.bulletTimer);
 				}
 			);
 
@@ -590,7 +591,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				game.append(enemyBullet);

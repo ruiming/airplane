@@ -620,7 +620,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet2.stop().animate(
@@ -632,7 +631,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet2.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet3.stop().animate(
@@ -644,7 +642,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet3.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				game.append(enemyBullet);
@@ -678,7 +675,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet2.stop().animate(
@@ -690,7 +686,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet2.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet3.stop().animate(
@@ -702,7 +697,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet3.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet4.stop().animate(
@@ -714,7 +708,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet4.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				enemyBullet5.stop().animate(
@@ -726,7 +719,6 @@ var core = {
 					'linear',
 					function() {
 						enemyBullet5.remove();
-						clearInterval(oEnemy.bulletTimer);
 					}
 				);
 				game.append(enemyBullet);

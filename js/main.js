@@ -94,7 +94,7 @@ var config = {
 
 	num: {
 		count: 0,
-		bullet: 2000,
+		bullet: 1500,
 		warcraftX: 0,
 		warcraftY: 0,
 		score: 0,
@@ -164,17 +164,15 @@ var startScreen = {
 			config.modetxt = $(this).html();
 			core.draw();
 
-			// 敌机速度随时间加快,每1s加快一次
+			// 敌机产生频率加快
 			var fast = setInterval(function(){
-				if(set[3] >= 3000){
-					set[3] -= 15;
-					set[4] -= 15;
+				if(config.num.enemybulletlimit < 500){
                     config.num.enemybulletlimit += 5;
 				}
 				else{
 					clearInterval(fast);
 				}
-			}, 1000);
+			}, 10000);
 
 
 			// 敌机生成事件
@@ -198,14 +196,12 @@ var startScreen = {
                     config.warcraft.level = 2;
                     $(".level").html("LV.2");
                     config.warcraft.bulletType = 1;
-                    config.mode[1] = 650;       // 子弹加快
-                    config.mode[5] -= 100;
+                    config.mode[5] = 650;
                 }
                 else if(config.num.score > 500000) {
                     config.warcraft.level = 3;
                     $(".level").html("LV.3");
                     config.warcraft.bulletType = 2;
-                    config.mode[1] = 500;
                     config.mode[5] = 600;
                 }
             },100)
@@ -318,7 +314,7 @@ var core = {
 				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
 			if(bx4 <= 20 && by4 <= 30) {
 				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
-					config.num.bullet += 500;
+					config.num.bullet += 200;
 					$(".bulletCount").html("弹药: " + config.num.bullet);
 					gift.remove();
 				}

@@ -116,7 +116,7 @@ var startScreen = {
 		game.append(title);
         var help = $("<div>");
             help.addClass("help");
-            help.html("ctrl键发射炮弹，space键发射导弹.<br/>注意敌机速度会逐渐加快，请尽快凑够经验以升级！<br/> Made by Ruiming");
+            help.html("ctrl键发射炮弹，space键发射导弹.<br/> Made by Ruiming");
         game.append(help);
 		game.append(list);
 
@@ -198,12 +198,22 @@ var startScreen = {
                     config.warcraft.bulletType = 1;
                     config.mode[5] = 650;
                 }
-                else if(config.num.score > 500000) {
+                else if(config.num.score > 500000 && config.num.score <= 800000) {
                     config.warcraft.level = 3;
                     $(".level").html("LV.3");
                     config.warcraft.bulletType = 2;
                     config.mode[5] = 600;
                 }
+				else if(config.num.score > 800000 && config.num.score <= 1200000) {
+					config.warcraft.level = 4;
+					$(".level").html("LV.4");
+					config.mode[2] = 120;
+				}
+				else {
+					config.warcraft.level = 5;
+					$(".level").html("LV.5");
+					config.mode[2] = 100;
+				}
             },100)
 		})
 	},
@@ -740,8 +750,8 @@ var core = {
 			}
 			if(config.warcraft.boom&&hurt){
 				hurt = false;
-				argument.hp-=3;
-				// 3条血下秒杀
+				argument.hp-=5;
+				// 5条血下秒杀
 				if(argument.hp <= 0){
 					oEnemy.css("background", "url('img/boom.png')");
 					if(argument.gift > 0 && argument.gift < 10) {

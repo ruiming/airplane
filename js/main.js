@@ -98,7 +98,6 @@ var config = {
 		warcraftX: 0,
 		warcraftY: 0,
 		score: 0,
-		hp: 3,
 		interval: 5,
 		boom: 3,
 		giftSpeed: 4000,

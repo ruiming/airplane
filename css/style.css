@@ -10,10 +10,8 @@ body {
 #box {
 	width: 600px;
 	height: 800px;
-	margin: 10px auto;
 	overflow: hidden;
 	position: relative;
-	border: 15px solid #f0f0f0;
 	background:transparent;
 }
 @keyframes animatedBackground {

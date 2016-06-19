@@ -1,0 +1,225 @@
+body {
+	margin: 0; 
+	padding: 0; 
+	background: #000;
+	background-image: url('../images/bg.jpg');
+	background-position: 0 0;
+	background-repeat: repeat;
+	animation: animatedBackground 3600s linear infinite;
+}
+#box {
+	width: 600px;
+	height: 800px;
+	overflow: hidden;
+	position: relative;
+	background:transparent;
+}
+@keyframes animatedBackground {
+	from { background-position: 0 0; }
+	to { background-position: 0 -100000%; }
+}
+#box .title {
+	z-index: 1;
+	color: #fff;
+	text-align: center;
+	font-size: 24px;
+	margin-top: 80px;
+}
+#box .help {
+	z-index: 1;
+	color: #f0f0f0;
+	text-align: center;
+	font-size: 18px;
+	margin: 20px 0;
+	padding: 10px;
+}
+#box .difficulty {
+	width: 300px;
+	z-index: 1;
+	text-align: center;
+	margin: 60px auto;
+}
+#box .difficulty span{
+	color: white;
+}
+#box ul {
+	padding: 0;
+	color: white;
+	text-align: center;
+	margin-right: 40px;
+}
+#box li {
+	padding: 4px 0;
+	display: inline-block;
+	width: 100%;
+}
+#box li span{
+	width: 33.3333333%;
+	float: left;
+	display: block;
+}
+#box .difficulty a {
+	width: 180px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	display: block;
+	margin: 20px auto 0 auto;
+	background: #f0f0f0;
+	color: #333;
+	text-decoration: none;
+}
+#box .difficulty a:hover {
+	background: #900;
+	color: #fff;
+}
+#box .bg img {
+	display: block;
+}
+#box .warcraft {
+	width: 40px;
+	height: 60px;
+	position: absolute;
+	left: 120px;
+	top: 500px;
+	z-index: 3;
+}
+#box .warcraft img {
+	width: 40px;
+}
+#box .boomBG{
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
+#box .bullet {
+	width: 6px;
+	height: 22px;
+	background: url('../img/bullet.png');
+	position: absolute;
+	z-index: 2;
+	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
+}
+#box .gift {
+	width:30px;
+	height:30px;
+	position: absolute;
+}
+#box .enemyBullet {
+	width: 6px;
+	height: 22px;
+	background: url('../img/bullet2.png');
+	position: absolute;
+	z-index: 2;
+	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
+}
+#box .enemy { 
+	width:30px;
+	height:30px;
+	position: absolute; 
+	z-index: 3;
+	transition-timing-function: linear;
+	-webkit-transition-timing-function: linear;
+}
+#box .hp ,
+#box .bulletCount,
+#box .boomCount,
+#box .status{
+	color: red;
+	top: 770px;
+	line-height: 30px;
+	font-weight: bold;
+	padding-left: 10px;
+	font-size: 16px;
+	z-index: 5;
+	position: absolute;
+}
+#box .status span{
+	padding-left: 25px;
+}
+#box .bulletCount {
+	padding-left: 110px;
+}
+#box .boomCount {
+	padding-left: 220px;
+}
+#box .status {
+	padding-left: 320px;
+}
+#box .score {
+	width: 220px; 
+	height: 30px; 
+	line-height: 30px; 
+	position: absolute; 
+	color: #fff; 
+	font-weight: bold; 
+	padding-left: 5px; 
+	font-size: 16px; 
+	z-index: 5;
+}
+#box .level {
+	width: 220px;
+	height: 30px;
+	line-height: 30px;
+	position: absolute;
+	color: #fff;
+	font-weight: bold;
+	padding-left: 5px;
+	font-size: 16px;
+	z-index: 5;
+	left: 200px;
+}
+#box .tips {
+	overflow: hidden;
+	width: 300px;
+	height: 250px;
+	line-height: 20px;
+	padding: 10px;
+	margin: 150px 140px;
+	background: #f0f0f0;
+	text-align: center;
+	z-index: 9999;
+}
+#box .tips .type { 
+	width: 160px; 
+	padding: 2px 15px; 
+	height: 30px; 
+	line-height: 30px; 
+	text-align: center; 
+	color: red; 
+	font-weight: bold;
+}
+input {
+	width: 120px;
+	padding: 5px 2px;
+	margin-left: 20px;
+}
+#box .tips p {
+	width: 160px;
+	height: 40px;
+	font-size: 32px; 
+	line-height: 40px; 
+	text-align: center; 
+	cursor: pointer;  
+	background: #333; 
+	color: #fff; 
+	margin: 20px auto 0 auto;
+}
+#box .tips span{
+	font-size: 24px;
+	margin: 25px 0;
+	text-align: center;
+	width: 100%;
+	display: inline-block;
+}
+#description {
+	margin: 0 auto;
+	width: 500px;
+	font-size: 14px;
+}
+#softwhy a {
+	text-decoration: underline;
+	color: red;
+}

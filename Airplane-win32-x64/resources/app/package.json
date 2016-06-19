@@ -1,0 +1,19 @@
+{
+  "name": "airplane",
+  "version": "1.0.0",
+  "description": "基于jquery的飞机大战游戏",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ruiming/airplane.git"
+  },
+  "author": "Ruiming",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ruiming/airplane/issues"
+  },
+  "homepage": "https://github.com/Ruiming/airplane#readme"
+}

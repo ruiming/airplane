@@ -1,25 +1,29 @@
-const electron = require('electron');
-const app = require('app');
-const BrowserWindow = require('browser-window');
+const {app, BrowserWindow} = require('electron');
+
+// Electron-packager打包后此文件需要更改一些参数才能进行
+// 上面改为
+// const electron = require('electron');
+// const app = require('app');
+// const BrowserWindow = require('browser-window');
+// 修改app, BrowserWindow引入方式，修改loadURL为loadUrl，并且mainWindow的resizable会失效
+// 如需要在web进行，可能需要更改index.html的script引入
+
 var mainWindow = null;
-
-
 function createWindow() {
     // 创建浏览器窗口。
     mainWindow = new BrowserWindow({
-        width: 600,
-        height: 800,
+        width: 620,
+        height: 840,
         center: true,
         minWidth: 600,
         minHeight: 800,
         resizable: false,
         title: "飞机大战",
-        fullscreen: false,
-        useContentSize: true
+        fullscreen: false
     });
 
     // 加载应用的 index.html。
-    mainWindow.loadUrl(`file://${__dirname}/index.html`);
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
 
     // 启用开发工具。
     // mainWindow.webContents.openDevTools();

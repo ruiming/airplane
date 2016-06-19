@@ -76,7 +76,7 @@ body {
 #box .bg img {
 	display: block;
 }
-#box .warcraft {
+#box .Air {
 	width: 40px;
 	height: 60px;
 	position: absolute;
@@ -84,7 +84,7 @@ body {
 	top: 500px;
 	z-index: 3;
 }
-#box .warcraft img {
+#box .Air img {
 	width: 40px;
 }
 #box .boomBG{

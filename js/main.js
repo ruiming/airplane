@@ -1,4 +1,6 @@
-$(function() {
+"use strict";
+$(() => {
+	// localStorage设置
 	if(localStorage["name"] != undefined){
 		config.name = localStorage["name"];
 	}
@@ -9,7 +11,7 @@ $(function() {
 		result = JSON.parse(localStorage["result"]);
 	}
 	else{
-		var temp = {
+		let temp = {
 			name: "Ruiming",
 			score: "9999999000",
 			time: new Date().toLocaleString()
@@ -18,21 +20,19 @@ $(function() {
 		localStorage["result"] = JSON.stringify(result);
 	}
 
+	// 战绩设置
 	setList();
 
+	// 绘制屏幕
 	startScreen.draw();
-
 });
 
-var result = [];
-var list = null;
-
-// 界面
-var game = $("#box");
-
-// 配置和参数
-var config = {
-
+let result = [];
+let list = null;
+let game = $("#box");
+// 全局变量和配置
+let config = {
+	// 资源/补给品
 	resource: [
 		"images/resource/gift_more_bullet.png",
 		"images/resource/gift_more_bullet.png",
@@ -45,11 +45,10 @@ var config = {
 		"images/resource/gift_more_bullet.png",
 		"images/resource/gift_more_bullet.png"
 	],
-
+	// 默认名
 	name: "渣渣",
-
+	// 敌机图片
 	type: [
-		// 四架F15，两架F16，一架F35，两架J10，两架J31，一架恐怖T50
 		"images/enemy/F15.png",		// 0
 		"images/enemy/F15.png",		// 1
 		"images/enemy/F15.png",		// 2
@@ -62,7 +61,6 @@ var config = {
 		"images/enemy/J-31.png",	// 9
 		"images/enemy/J-31.png",	// 10
 		"images/enemy/T50.png",		// 11
-        // 补充 --
         "images/enemy/F15.png",     // 12
         "images/enemy/F15.png",     // 13
         "images/enemy/J-10.png",    // 14
@@ -72,99 +70,98 @@ var config = {
         "images/enemy/F35.png",     // 18
         "images/enemy/F35.png"      // 19
 	],
-
-	warcraft: {
-		hp: 3,
-		type: "images/J-20/J-20.png",
-		boom: false,
-		invincible: 0,
-		powerLimit: 0,
-		bulletType: 0,
-        level: 1
+	// 战机配置
+	Air: {
+		hp: 3,								// 战机生命值
+		type: "images/J-20/J-20.png",		// 战机类型
+		boom: false,						// 是否发射导弹
+		invincible: 0,						// 是否无敌状态
+		powerLimit: 0,						// 免费高速子弹时间
+		bulletType: 0,						// 子弹类型
+        level: 1							// 等级
 	},
-
+	// 游戏必须的三个计数器
 	timer: {
-		bullet: null,
-		enemy: null,
-        levelup: null
+		bullet: null,						// 战机子弹计时器
+		enemy: null,						// 敌机产生计时器
+        levelup: null						// 战机生产计时器
 	},
-
 	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距750
 	mode: [null, 900, 150, 6500, 7500, 730, 1000],
-
+	// 其他参数
 	num: {
 		count: 0,
 		bullet: 1500,
-		warcraftX: 0,
-		warcraftY: 0,
+		AirX: 0,
+		AirY: 0,
 		score: 0,
 		interval: 5,
 		boom: 3,
 		giftSpeed: 4000,
         enemybulletlimit: 0
 	}
-
 };
 
-// 进入游戏
-var startScreen = {
-	draw: function() {
-		var title = $("<div>");
-		title.addClass("title");
-		title.html("飞机大战");
+// 绘制屏幕
+let startScreen = {
+	draw: () => {
+		let title = $("<div>");
+			title.addClass("title");
+			title.html("飞机大战");
 		game.append(title);
-        var help = $("<div>");
+
+        let help = $("<div>");
             help.addClass("help");
             help.html("ctrl键发射炮弹，space键发射导弹.<br/> Made by Ruiming");
         game.append(help);
+
 		game.append(list);
 
-		var difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");
-
+		let difficulty = $("<div class='difficulty'><span>请输入您的大名</span><input type='text'><a href='javascript:void(0)'>开始游戏</a></div>");
 		game.append(difficulty);
 
-		game.find($(".difficulty")).delegate("a", "click", function(e) {
+		// 开始游戏
+		game.find($(".difficulty")).delegate("a", "click", e => {
 			config.name = $(".difficulty input").val();
 			if(config.name == "" || config.name == undefined) {
 				config.name = "渣渣";
 			}
 			startScreen.remove();
 
-			$(document).mousemove(function(e) {
-				var x = e.clientX - game.offset().left;
-				var y = e.clientY - game.offset().top;
-				core.warcraft([x,y]);
+			// 战机跟踪鼠标
+			$(document).mousemove(e => {
+				let x = e.clientX - game.offset().left;
+				let y = e.clientY - game.offset().top;
+				core.Air([x,y]);
 			});
+			let down = [];
+			let up = 1;
 
-			var down = [];
-			var up = 1;
-
-			$(document).keydown(function(e){
+			// 监控键盘
+			$(document).keydown(e => {
 				down[e.keyCode] = true;
 				// 发射子弹
-				if(down[17]  && config.num.bullet > 0 && config.warcraft.hp > 0) {	// ctrl
+				if(down[17]  && config.num.bullet > 0 && config.Air.hp > 0) {	// ctrl
 					if(up % config.num.interval == 1){
-						core.bullet(set[1], [config.num.warcraftX, config.num.warcraftY]);
+						core.bullet(set[1], [config.num.AirX, config.num.AirY]);
 					}
 					up ++;
 				}
-
 				// 发射导弹
 				if(down[32] && config.num.boom > 0) {
 					core.boom();
 				}
-			}).keyup(function(e){
+			}).keyup(e => {
 				down[e.keyCode] = false;
 				up = 1;
 			});
 
-
-			var set = config.mode;
+			let set = config.mode;
 			config.modetxt = $(this).html();
 			core.draw();
 
 			// 敌机产生频率加快
-			var fast = setInterval(function(){
+			let fast = setInterval(() => {
 				if(config.num.enemybulletlimit < 500){
                     config.num.enemybulletlimit += 5;
 				}
@@ -173,9 +170,8 @@ var startScreen = {
 				}
 			}, 10000);
 
-
 			// 敌机生成事件
-			config.timer.enemy = setInterval(function() {
+			config.timer.enemy = setInterval(() => {
 				core.enemy({
 					speed: randomNum(set[3], set[4]),
 					left: randomNum(10, 570),
@@ -186,99 +182,100 @@ var startScreen = {
 			}, set[5]);
 
             // 升级
-            config.timer.levelup = setInterval(function(){
+            config.timer.levelup = setInterval(() => {
                 if(config.num.score < 200000) {
-                    config.warcraft.level = 1;
+                    config.Air.level = 1;
                     config.mode[5] = 700;
                 }
                 else if(config.num.score >= 200000 && config.num.score <= 500000) {
-                    config.warcraft.level = 2;
+                    config.Air.level = 2;
                     $(".level").html("LV.2");
-                    config.warcraft.bulletType = 1;
+                    config.Air.bulletType = 1;
                     config.mode[5] = 650;
                 }
                 else if(config.num.score > 500000 && config.num.score <= 800000) {
-                    config.warcraft.level = 3;
+                    config.Air.level = 3;
                     $(".level").html("LV.3");
-                    config.warcraft.bulletType = 2;
+                    config.Air.bulletType = 2;
                     config.mode[5] = 600;
                 }
 				else if(config.num.score > 800000 && config.num.score <= 1200000) {
-					config.warcraft.level = 4;
+					config.Air.level = 4;
 					$(".level").html("LV.4");
 					config.mode[2] = 120;
 				}
 				else {
-					config.warcraft.level = 5;
+					config.Air.level = 5;
 					$(".level").html("LV.5");
 					config.mode[2] = 100;
 				}
             },100)
 		})
 	},
-	remove: function() {
-		var DIV = game.children($("div"));
-		setTimeout(function() {
+	remove: () => {
+		let DIV = game.children($("div"));
+		setTimeout(() => {
 			DIV.remove();
 		}, 300)
 	}
 };
 
 // 核心事件
-var core = {
+let core = {
 	// 开始游戏
-	draw: function() {
-		var warcraft = $("<div class='warcraft'><img src='" + config.warcraft.type + "'></div>");
-		game.append(warcraft);
-		
-		var lv = $("<div class='lv'></div>");
-		game.append(lv);
-		
-		var hp = $("<div class='hp'></div>");
-		hp.html("生命值: " + config.warcraft.hp);
+	draw: () => {
+		let Air = $("<div class='Air'><img src='" + config.Air.type + "'></div>");
+		game.append(Air);
+
+		let lv = $("<div class='lv'></div>");
+		game.append(lv);		
+
+		let hp = $("<div class='hp'></div>");
+		hp.html("生命值: " + config.Air.hp);
 		game.append(hp);
 
-		var bulletCount = $("<div class='bulletCount'></div>");
+		let bulletCount = $("<div class='bulletCount'></div>");
 		bulletCount.html("弹药: " + config.num.bullet);
 		game.append(bulletCount);
 
-		var boomCount = $("<div class='boomCount'></div>");
+		let boomCount = $("<div class='boomCount'></div>");
 		boomCount.html("导弹: " + config.num.boom);
 		game.append(boomCount);
 
-		var status = $("<div class='status'><span class='power'></span><span class='invincible'></span></div>");
+		let status = $("<div class='status'><span class='power'></span><span class='invincible'></span></div>");
 		game.append(status);
 
-		var score = $("<div class='score'>0</div>");
+		let score = $("<div class='score'>0</div>");
 		game.append(score);
 
-        var level = $("<div class='level'>LV.0</div>");
+        let level = $("<div class='level'>LV.0</div>");
         game.append(level);
         
 		// 战机高速免费子弹事件
-		warcraft.powerTime = setInterval(function(){
-			if(config.warcraft.powerLimit > 0){
-				config.warcraft.powerLimit--;
-				$(".power").html("高速免费子弹: " + config.warcraft.powerLimit + "S");
+		Air.powerTime = setInterval(() => {
+			if(config.Air.powerLimit > 0){
+				config.Air.powerLimit--;
+				$(".power").html("高速免费子弹: " + config.Air.powerLimit + "S");
 			}
-			else if(config.warcraft.powerLimit == 0){
+			else if(config.Air.powerLimit == 0){
 				config.num.interval = 5;
 				$(".power").html("");
 			}
 		}, 1000);
+
 		// 战机无敌事件
-		warcraft.invincible = setInterval(function(){
-			if(config.warcraft.invincible > 0){
-				warcraft.css({
+		Air.invincible = setInterval(() => {
+			if(config.Air.invincible > 0){
+				Air.css({
 					padding: "5px",
 					border: "1px solid red",
 					borderRadius: "50%"
 				});
-				config.warcraft.invincible--;
-				$(".invincible").html("无敌时间: " + config.warcraft.invincible + "S");
+				config.Air.invincible--;
+				$(".invincible").html("无敌时间: " + config.Air.invincible + "S");
 			}
 			else {
-				warcraft.css({
+				Air.css({
 					border: "none",
 					padding: "5px"
 				});
@@ -286,41 +283,43 @@ var core = {
 			}
 		}, 1000);
 	},
-	// 战机位置
-	warcraft: function(pos) {
-		var warcraft = game.find($(".warcraft")),
-			left = pos[0] - warcraft.width()/2 -15,
-			top = pos[1] - warcraft.height()/2 - 15;
 
-		if(left <= -warcraft.width()/2){
-			left = -warcraft.width()/2 + 5;
+	// 战机位置
+	Air: pos => {
+		let Air = game.find($(".Air")),
+			left = pos[0] - Air.width()/2 -15,
+			top = pos[1] - Air.height()/2 - 15;
+
+		if(left <= -Air.width()/2){
+			left = -Air.width()/2 + 5;
 		}
-		else if(left >= game.width() - warcraft.width()/2){
-			left = game.width() - warcraft.width()/2 - 5;
+		else if(left >= game.width() - Air.width()/2){
+			left = game.width() - Air.width()/2 - 5;
 		}
 
 		if(top <= 0){
 			top = 0;
 		}
-		else if(top >= game.height() - warcraft.height()){
-			top = game.height() - warcraft.height();
+		else if(top >= game.height() - Air.height()){
+			top = game.height() - Air.height();
 		}
 
-		warcraft.css({
+		Air.css({
 			left: left,
 			top: top
 		});
 
-		config.num.warcraftX = left + warcraft.width()/2;
-		config.num.warcraftY = top + warcraft.height()/2;
+		config.num.AirX = left + Air.width()/2;
+		config.num.AirY = top + Air.height()/2;
 
-		var t = $(".gift").length;
+		let t = $(".gift").length;
 
 		// 我方获取礼物
-		for(var u=0; u<t; u++){
-			var gift = $(".gift").eq(u);
-			var bx4 = Math.abs(parseInt(warcraft.css("left")) - parseInt(gift.css("left"))),
-				by4 = Math.abs(parseInt(warcraft.css("top")) - parseInt(gift.css("top")));
+		for(let u=0; u<t; u++){
+			let gift = $(".gift").eq(u);
+			let bx4 = Math.abs(parseInt(Air.css("left")) - parseInt(gift.css("left"))),
+				by4 = Math.abs(parseInt(Air.css("top")) - parseInt(gift.css("top")));
+
 			if(bx4 <= 20 && by4 <= 30) {
 				if(gift.attr("src") == "images/resource/gift_more_bullet.png"){
 					config.num.bullet += 200;
@@ -333,44 +332,49 @@ var core = {
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_more_health.png"){
-					config.warcraft.hp += 1;
-					$(".hp").html("生命值: " + config.warcraft.hp);
+					config.Air.hp += 1;
+					$(".hp").html("生命值: " + config.Air.hp);
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_more_power.png"){		// 免费高速子弹十秒
 					config.num.interval = 2;
-					config.warcraft.powerLimit += 10;
+					config.Air.powerLimit += 10;
 					gift.remove();
 				}
 				else if(gift.attr("src") == "images/resource/gift_Invincible.png"){		// 无敌十秒
-					config.warcraft.invincible += 10;
+					config.Air.invincible += 10;
 					gift.remove();
 				}
 			}
 		}
 	},
+
 	// 战机生命值
-	hp: function(hp) {
-		var HP = $(".hp");
+	hp: hp => {
+		let HP = $(".hp");
 		HP.html("生命值:" + hp);
 	},
-	boom: function(){
+	boom: () => {
 		if(config.num.boom > 0){
-			config.warcraft.boom = true;
+			config.Air.boom = true;
 			config.num.boom--;
-			var boomBG = $("<img>");
+
+			let boomBG = $("<img>");
 				boomBG.addClass('boomBG');
 				boomBG.attr("src", "images/resource/boom.png");
 			game.append(boomBG);
+
 			$(".boomCount").html("导弹数: " + config.num.boom);
-			setTimeout(function(){
-				config.warcraft.boom = false;
+
+			setTimeout(() => {
+				config.Air.boom = false;
 				boomBG.remove();
 			}, 1000);
 		}
 	},
+
 	// 战机子弹
-	bullet: function(speed, pos) {
+	bullet: (speed, pos) => {
 		/* 战机子弹运动规律,游戏宽高W,H，战机偏移X,Y
 		 * 单弹:
 		 *    弹药top: Y-H   -> 弹药总运行距离：Y + abs( Y - H ) = H  -> 均匀速度运动
@@ -383,25 +387,25 @@ var core = {
 		 *    右：
 		 *      弹药left: 2X - H * Math.tan(Math.PI/20)
 		 */
-		var bullet = $("<div class='bullet'></div>");
-		var bullet2 = $("<div class='bullet'></div>");
-		var bullet3 = $("<div class='bullet'></div>");
-        var type = config.warcraft.bulletType;
+		let bullet = $("<div class='bullet'></div>");
+		let bullet2 = $("<div class='bullet'></div>");
+		let bullet3 = $("<div class='bullet'></div>");
+        let type = config.Air.bulletType;
 		if(type == 0){									// 单弹
 			bullet.css({
 				left: pos[0] - bullet.width()/2 + 3,
 				top: pos[1] - bullet.height()/2
 			});
 			bullet.stop().animate(
-				{top: config.num.warcraftY - game.height()},
+				{top: config.num.AirY - game.height()},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet.remove();
 				}
 			);
 			game.append(bullet);
-			if(config.warcraft.powerLimit == 0) {
+			if(config.Air.powerLimit == 0) {
 				config.num.bullet--;
 			}
 		}
@@ -416,22 +420,22 @@ var core = {
 			});
 			game.append(bullet);
 			game.append(bullet2);
-			if(config.warcraft.powerLimit == 0) {
+			if(config.Air.powerLimit == 0) {
 				config.num.bullet-=2;
 			}
 			bullet.stop().animate(	// 修正
-				{top: config.num.warcraftY - game.height()},
+				{top: config.num.AirY - game.height()},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet.remove();
 				}
 			);
 			bullet2.stop().animate(	// 修正
-				{top: config.num.warcraftY - game.height()},
+				{top: config.num.AirY - game.height()},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet2.remove();
 				}
 			)
@@ -452,47 +456,47 @@ var core = {
 			game.append(bullet);
 			game.append(bullet2);
 			game.append(bullet3);
-			if(config.warcraft.powerLimit == 0) {
+			if(config.Air.powerLimit == 0) {
 				config.num.bullet-=3;
 			}
 			bullet.stop().animate(	// 修正
-				{top: config.num.warcraftY - game.height()},
+				{top: config.num.AirY - game.height()},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet.remove();
 				}
 			);
 			bullet2.stop().animate(	// 修正 X - H * Math.tan(Math.PI/60)
 				{
-					top: config.num.warcraftY - game.height(),
-					left: config.num.warcraftX - game.height()*Math.tan(Math.PI/20)
+					top: config.num.AirY - game.height(),
+					left: config.num.AirX - game.height()*Math.tan(Math.PI/20)
 				},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet2.remove();
 				}
 			);
 			bullet3.stop().animate(	// 修正
 				{
-					top: config.num.warcraftY - game.height(),
-					left: config.num.warcraftX + game.height()*Math.tan(Math.PI/20)
+					top: config.num.AirY - game.height(),
+					left: config.num.AirX + game.height()*Math.tan(Math.PI/20)
 				},
 				speed,
 				'linear',
-				function(){
+				() => {
 					bullet3.remove();
 				}
 			)
 		}
-		var bulletCount = $(".bulletCount");
+		let bulletCount = $(".bulletCount");
 			bulletCount.html("弹药: " + config.num.bullet);
 
 	},
 	// 敌机生成
-	enemy: function(argument) {
-		var speed = argument.speed,
+	enemy: argument => {
+		let speed = argument.speed,
 			left = argument.left,
 			top = argument.top,
 			type = argument.type,
@@ -550,13 +554,14 @@ var core = {
 				break;
 			case 11:						// T50,五弹，射速快，频率高
 				argument.exp = 5000;
-				argument.bulletlimit = 1300 - config.num.enemybulletlimit;
+				argument.bulletlimit = 1500 - config.num.enemybulletlimit;
 				argument.bullettype = 3;
 				argument.hp = 4;
 				argument.bulletSpeed = 2200;
 				break;
 		}
-		var oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
+
+		let oEnemy = $("<div class='enemy'><img style='width:30px' src='" + config.type[type] + "'</div>");
 			oEnemy.css({
 				left: left,
 				top: top
@@ -567,7 +572,7 @@ var core = {
 				{top: game.height()},
 				speed,
 				'linear',
-				function(){
+				() => {
 					oEnemy.remove();
 					clearInterval(oEnemy.timer);
 					clearInterval(oEnemy.bulletTimer);
@@ -575,15 +580,15 @@ var core = {
 			);
 
 		// 敌机子弹事件
-		oEnemy.bulletTimer = setInterval(function() {
-			var x = parseInt(oEnemy.css("left")) + 6,
+		oEnemy.bulletTimer = setInterval(() => {
+			let x = parseInt(oEnemy.css("left")) + 6,
 				y = parseInt(oEnemy.css("top")) + 15;
 
-			var enemyBullet = $("<div class='enemyBullet'></div>");
-			var enemyBullet2 = $("<div class='enemyBullet'></div>");
-			var enemyBullet3 = $("<div class='enemyBullet'></div>");
-			var enemyBullet4 = $("<div class='enemyBullet'></div>");
-			var enemyBullet5 = $("<div class='enemyBullet'></div>");
+			let enemyBullet = $("<div class='enemyBullet'></div>");
+			let enemyBullet2 = $("<div class='enemyBullet'></div>");
+			let enemyBullet3 = $("<div class='enemyBullet'></div>");
+			let enemyBullet4 = $("<div class='enemyBullet'></div>");
+			let enemyBullet5 = $("<div class='enemyBullet'></div>");
 
 			if(argument.bullettype == 1) {				// 单弹
 				enemyBullet.css({
@@ -594,7 +599,7 @@ var core = {
 					{top: game.height() + y},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet.remove();
 					}
 				);
@@ -617,7 +622,7 @@ var core = {
 					{top: game.height() + y},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet.remove();
 					}
 				);
@@ -628,7 +633,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet2.remove();
 					}
 				);
@@ -639,7 +644,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet3.remove();
 					}
 				);
@@ -672,7 +677,7 @@ var core = {
 					{top: game.height() + y},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet.remove();
 					}
 				);
@@ -683,7 +688,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet2.remove();
 					}
 				);
@@ -694,7 +699,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet3.remove();
 					}
 				);
@@ -705,7 +710,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet4.remove();
 					}
 				);
@@ -716,7 +721,7 @@ var core = {
 					},
 					argument.bulletSpeed,
 					'linear',
-					function() {
+					() => {
 						enemyBullet5.remove();
 					}
 				);
@@ -728,26 +733,26 @@ var core = {
 			}
 		}, argument.bulletlimit);
 
-		var hurt = true;
+		let hurt = true;
 		// 碰撞检测
-		oEnemy.timer = setInterval(function() {
-			var x = parseInt(oEnemy.css("left")) + 12,
+		oEnemy.timer = setInterval(() => {
+			let x = parseInt(oEnemy.css("left")) + 12,
 				y = parseInt(oEnemy.css("top")) + 15,
 				l = $(".bullet").length,
 				k = $(".enemyBullet").length;
 			// 导弹爆炸
-			if(!config.warcraft.boom){
+			if(!config.Air.boom){
 				hurt = true;
 			}
-			if(config.warcraft.boom&&hurt){
+			if(config.Air.boom&&hurt){
 				hurt = false;
 				argument.hp-=5;
 				// 5条血下秒杀
 				if(argument.hp <= 0){
 					oEnemy.css("background", "url('img/boom.png')");
 					if(argument.gift > 0 && argument.gift < 10) {
-						setTimeout(function() {
-							var gift = $("<img>");
+						setTimeout(() => {
+							let gift = $("<img>");
 							gift.addClass('gift');
 							gift.css({
 								left: x,
@@ -758,14 +763,14 @@ var core = {
 								{top: y + game.height()},
 								config.num.giftSpeed,
 								'linear',
-								function(){
+								() => {
 									gift.remove();
 								}
 							);
 							game.append(gift);
 						}, 300);
 					}
-					setTimeout(function() {
+					setTimeout(() => {
 						oEnemy.remove();
 					}, 300);
 					clearInterval(oEnemy.bulletTimer);
@@ -773,15 +778,15 @@ var core = {
 					config.num.score += argument.exp;
 					game.find($(".score")).html(config.num.score);
 
-					for(var w=0; w<k; w++){
+					for(let w=0; w<k; w++){
 						$(".enemyBullet").eq(w).remove();
 					}
 				}
 			}
 
 			// 敌机与我方子弹触碰
-			for(var i=0; i<l; i++){
-				var bx = Math.abs( x - parseInt($(".bullet").eq(i).css("left"))),
+			for(let i=0; i<l; i++){
+				let bx = Math.abs( x - parseInt($(".bullet").eq(i).css("left"))),
 					by = Math.abs( y - parseInt($(".bullet").eq(i).css("top")));
 
 				if(bx <= 14 && by <= 20) {
@@ -789,7 +794,7 @@ var core = {
 					if(argument.hp > 0){
 						$(".bullet").eq(i).remove();
 						oEnemy.css("background", "url('img/boom.png')");
-						setTimeout(function() {
+						setTimeout(() => {
 							oEnemy.css("background", "");
 						}, 300);
 					}
@@ -797,8 +802,8 @@ var core = {
 						// 掉礼物
 						oEnemy.css("background", "url('img/boom.png')");
 						if(argument.gift > 0 && argument.gift < 10) {
-							setTimeout(function() {
-								var gift = $("<img>");
+							setTimeout(() => {
+								let gift = $("<img>");
 								gift.addClass('gift');
 								gift.css({
 									left: x,
@@ -809,14 +814,14 @@ var core = {
 									{top: y + game.height()},
 									config.num.giftSpeed,
 									'linear',
-									function(){
+									() => {
 										gift.remove();
 									}
 								);
 								game.append(gift);
 							}, 300);
 						}
-						setTimeout(function() {
+						setTimeout(() => {
 							oEnemy.remove();
 						}, 300);
 						$(".bullet").eq(i).remove();
@@ -829,39 +834,39 @@ var core = {
 			}
 
 			// 我方与敌机子弹碰撞
-			for(var d=0; d<k; d++) {
-				var bx2 = Math.abs(parseInt($(".warcraft").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 12),
-					by2 = Math.abs(parseInt($(".warcraft").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
+			for(let d=0; d<k; d++) {
+				let bx2 = Math.abs(parseInt($(".Air").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 12),
+					by2 = Math.abs(parseInt($(".Air").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
 
 				if(bx2 <= 14 && by2 <= 20) {
-					if(!config.warcraft.invincible){
-						config.warcraft.hp--;
-						core.hp(config.warcraft.hp);
+					if(!config.Air.invincible){
+						config.Air.hp--;
+						core.hp(config.Air.hp);
 					}
-					if(config.warcraft.hp <= 0) {
+					if(config.Air.hp <= 0) {
 						core.GameOver();
 					}
 					else {
 						$(".enemyBullet").eq(d).remove();
-						$(".warcraft").css("background", "url('img/boom2.png')");
-						setTimeout(function() {
-							$(".warcraft").css("background", "");
+						$(".Air").css("background", "url('img/boom2.png')");
+						setTimeout(() =>  {
+							$(".Air").css("background", "");
 						}, 1000);
 					}
 				}
 			}
 
 			// 我方与敌机碰撞
-			var bx3 = Math.abs(x - parseInt($(".warcraft").css("left")) - 30),
-				by3 = Math.abs(y - parseInt($(".warcraft").css("top")) - 18);
+			let bx3 = Math.abs(x - parseInt($(".Air").css("left")) - 30),
+				by3 = Math.abs(y - parseInt($(".Air").css("top")) - 18);
 			if(bx3 <= 40 && by3 <= 33) {
-				if(!config.warcraft.invincible){
-					config.warcraft.hp--;
-					core.hp(config.warcraft.hp);
+				if(!config.Air.invincible){
+					config.Air.hp--;
+					core.hp(config.Air.hp);
 				}
                 if(argument.gift > 0 && argument.gift < 10) {
-                    setTimeout(function() {
-                        var gift = $("<img>");
+                    setTimeout(() => {
+                        let gift = $("<img>");
                         gift.addClass('gift');
                         gift.css({
                             left: x,
@@ -872,7 +877,7 @@ var core = {
                             {top: y + game.height()},
                             config.num.giftSpeed,
                             'linear',
-                            function(){
+                            () => {
                                 gift.remove();
                             }
                         );
@@ -880,7 +885,7 @@ var core = {
                     }, 300);
                 }
 				oEnemy.css("background", "url('img/boom.png')");
-				setTimeout(function() {
+				setTimeout(() => {
 					oEnemy.remove();
 				}, 300);
 
@@ -890,34 +895,34 @@ var core = {
 				clearInterval(oEnemy.bulletTimer);
 				clearInterval(oEnemy.timer);
 
-				if(config.warcraft.hp <= 0) {
+				if(config.Air.hp <= 0) {
 					core.GameOver();
 				}
 				else {
-					$(".warcraft").css("background", "url('img/boom2.png')");
-					setTimeout(function() {
-						$(".warcraft").css("background", "");
+					$(".Air").css("background", "url('img/boom2.png')");
+					setTimeout(() => {
+						$(".Air").css("background", "");
 					}, 1000);
 				}
 			}
 		});
 
 	},
-	GameOver: function(){
+	GameOver: () => {
 
 		$(".hp").remove();
 		$(".bulletCount").remove();
-		$(".warcraft").remove();
+		$(".Air").remove();
 		$(".boomCount").remove();
         $(".level").remove();
 		$(".status").remove();
-		var tips = $("<div class='tips'></div>");
+		let tips = $("<div class='tips'></div>");
 		tips.html("<span>Game Over</span><span>分数:" + $(".score").html() + "</span><p>重来</p>");
-		setTimeout(function() {
+		setTimeout(() =>  {
 			game.append(tips);
 		}, 3000);
 
-		var temp = {
+		let temp = {
 			name: config.name,
 			score: $(".score").html(),
 			time: new Date().toLocaleString()
@@ -929,40 +934,40 @@ var core = {
 		localStorage["result"] = JSON.stringify(result);
 		localStorage["name"] = config.name;
 		$(".score").css("display", "none");
-		$(".warcraft").css("background", "url('img/boom2.png')");
+		$(".Air").css("background", "url('img/boom2.png')");
 
-		game.delegate(".tips p", "click", function() {
+		game.delegate(".tips p", "click", () =>  {
 			config.num.score = 0;
-			config.warcraft.hp = 3;
+			config.Air.hp = 3;
 			config.num.interval = 5;
             config.num.boom = 3;
             config.num.bullet = 1000;
-            config.warcraft.level = 0;
-            config.warcraft.bulletType = 0;
+            config.Air.level = 0;
+            config.Air.bulletType = 0;
             config.mode = [null, 900, 150, 6500, 7500, 800, 1000];
 			setList();
 			startScreen.remove();
 			startScreen.draw();
 		});
 
-		clearInterval(core.warcraft.invincible);
-		clearInterval(core.warcraft.powerTime);
+		clearInterval(core.Air.invincible);
+		clearInterval(core.Air.powerTime);
 		clearInterval(config.timer.bullet);
 		clearInterval(config.timer.enemy);
         clearInterval(config.timer.levelup);
 	}
 };
-var randomNum = function(a, b){
-	var value = Math.abs(a-b), num;
+let randomNum = (a, b) => {
+	let value = Math.abs(a-b), num;
 	return parseInt(Math.random()*value) + Math.min(a,b);
 };
-var setList = function(){
+let setList = () => {
 	list = $("<ul></ul>");
-	var before = $("<li><span>名字</span><span>分数</span><span>时间</span></li>");
+	let before = $("<li><span>名字</span><span>分数</span><span>时间</span></li>");
 	list.prepend(before);
-	$.each(result,function(n, one){
-		var text =  $("<li></li>");
-		$.each(one, function(key, value){
+	$.each(result,(n, one) => {
+		let text =  $("<li></li>");
+		$.each(one, (key, value) => {
 			text.append("<span>" + value + "</span>");
 		});
 		list.append(text);

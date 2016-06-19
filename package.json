@@ -4,7 +4,8 @@
   "description": "基于jquery的飞机大战游戏",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-packager . Airplane --platform=win32 --arch=x64 --version=0.32.3"
   },
   "repository": {
     "type": "git",

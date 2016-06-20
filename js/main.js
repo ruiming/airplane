@@ -287,7 +287,7 @@ let core = {
 	// 战机位置
 	Air: pos => {
 		let Air = game.find($(".Air")),
-			left = pos[0] - Air.width()/2 -15,
+			left = pos[0] - Air.width()/2,
 			top = pos[1] - Air.height()/2 - 15;
 
 		if(left <= -Air.width()/2){

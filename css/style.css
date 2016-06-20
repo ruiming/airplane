@@ -95,7 +95,7 @@ body {
 #box .bullet {
 	width: 6px;
 	height: 22px;
-	background: url('../img/bullet.png');
+	background: url('../images/bullet.png');
 	position: absolute;
 	z-index: 2;
 	transition-timing-function: linear;
@@ -109,7 +109,7 @@ body {
 #box .enemyBullet {
 	width: 6px;
 	height: 22px;
-	background: url('../img/bullet2.png');
+	background: url('../images/bullet2.png');
 	position: absolute;
 	z-index: 2;
 	transition-timing-function: linear;

@@ -749,7 +749,7 @@ let core = {
 				argument.hp-=5;
 				// 5条血下秒杀
 				if(argument.hp <= 0){
-					oEnemy.css("background", "url('img/boom.png')");
+					oEnemy.css("background", "url('images/boom.png')");
 					if(argument.gift > 0 && argument.gift < 10) {
 						setTimeout(() => {
 							let gift = $("<img>");
@@ -793,14 +793,14 @@ let core = {
 					argument.hp--;
 					if(argument.hp > 0){
 						$(".bullet").eq(i).remove();
-						oEnemy.css("background", "url('img/boom.png')");
+						oEnemy.css("background", "url('images/boom.png')");
 						setTimeout(() => {
 							oEnemy.css("background", "");
 						}, 300);
 					}
 					else {
 						// 掉礼物
-						oEnemy.css("background", "url('img/boom.png')");
+						oEnemy.css("background", "url('images/boom.png')");
 						if(argument.gift > 0 && argument.gift < 10) {
 							setTimeout(() => {
 								let gift = $("<img>");
@@ -848,7 +848,7 @@ let core = {
 					}
 					else {
 						$(".enemyBullet").eq(d).remove();
-						$(".Air").css("background", "url('img/boom2.png')");
+						$(".Air").css("background", "url('images/boom2.png')");
 						setTimeout(() =>  {
 							$(".Air").css("background", "");
 						}, 1000);
@@ -884,7 +884,7 @@ let core = {
                         game.append(gift);
                     }, 300);
                 }
-				oEnemy.css("background", "url('img/boom.png')");
+				oEnemy.css("background", "url('images/boom.png')");
 				setTimeout(() => {
 					oEnemy.remove();
 				}, 300);
@@ -899,7 +899,7 @@ let core = {
 					core.GameOver();
 				}
 				else {
-					$(".Air").css("background", "url('img/boom2.png')");
+					$(".Air").css("background", "url('images/boom2.png')");
 					setTimeout(() => {
 						$(".Air").css("background", "");
 					}, 1000);
@@ -934,7 +934,7 @@ let core = {
 		localStorage["result"] = JSON.stringify(result);
 		localStorage["name"] = config.name;
 		$(".score").css("display", "none");
-		$(".Air").css("background", "url('img/boom2.png')");
+		$(".Air").css("background", "url('images/boom2.png')");
 
 		game.delegate(".tips p", "click", () =>  {
 			config.num.score = 0;

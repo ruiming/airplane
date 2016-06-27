@@ -12,11 +12,11 @@ var mainWindow = null;
 function createWindow() {
     // 创建浏览器窗口。
     mainWindow = new BrowserWindow({
-        width: 620,
-        height: 840,
+        width: 500,
+        height: 770,
         center: true,
-        minWidth: 600,
-        minHeight: 800,
+        minWidth: 500,
+        minHeight: 770,
         resizable: false,
         title: "飞机大战",
         fullscreen: false

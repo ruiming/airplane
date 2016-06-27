@@ -8,8 +8,8 @@ body {
 	animation: animatedBackground 3600s linear infinite;
 }
 #box {
-	width: 600px;
-	height: 800px;
+
+	height: 700px;
 	overflow: hidden;
 	position: relative;
 	background:transparent;
@@ -128,7 +128,7 @@ body {
 #box .boomCount,
 #box .status{
 	color: red;
-	top: 770px;
+	top: 670px;
 	line-height: 30px;
 	font-weight: bold;
 	padding-left: 10px;
@@ -173,11 +173,11 @@ body {
 }
 #box .tips {
 	overflow: hidden;
-	width: 300px;
+	width: 280px;
 	height: 250px;
 	line-height: 20px;
 	padding: 10px;
-	margin: 150px 140px;
+	margin: 150px auto;
 	background: #f0f0f0;
 	text-align: center;
 	z-index: 9999;

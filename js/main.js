@@ -14,7 +14,7 @@ $(() => {
 		let temp = {
 			name: "Ruiming",
 			score: "9999999000",
-			time: new Date().toLocaleString()
+			time: (new Date()).Format("M-d h:m")
 		};
 		result.push(temp);
 		localStorage["result"] = JSON.stringify(result);
@@ -87,7 +87,7 @@ let config = {
         levelup: null						// 战机生产计时器
 	},
 	// 子弹速度900，子弹延迟150，敌机速度在9000到9500之间，敌机产生间距750
-	mode: [null, 900, 150, 6500, 7500, 730, 1000],
+	mode: [null, 900, 150, 6500, 7500, 800, 1000],
 	// 其他参数
 	num: {
 		count: 0,
@@ -174,7 +174,7 @@ let startScreen = {
 			config.timer.enemy = setInterval(() => {
 				core.enemy({
 					speed: randomNum(set[3], set[4]),
-					left: randomNum(10, 570),
+					left: randomNum(10, 450),
 					top: -randomNum(30, 80),
 					type: randomNum(0, 20),
 					gift: randomNum(0, 100)
@@ -183,23 +183,23 @@ let startScreen = {
 
             // 升级
             config.timer.levelup = setInterval(() => {
-                if(config.num.score < 200000) {
+                if(config.num.score < 20000) {
                     config.Air.level = 1;
-                    config.mode[5] = 700;
+                    config.mode[5] = 750;
                 }
-                else if(config.num.score >= 200000 && config.num.score <= 500000) {
+                else if(config.num.score >= 20000 && config.num.score <= 50000) {
                     config.Air.level = 2;
                     $(".level").html("LV.2");
                     config.Air.bulletType = 1;
-                    config.mode[5] = 650;
+                    config.mode[5] = 700;
                 }
-                else if(config.num.score > 500000 && config.num.score <= 800000) {
+                else if(config.num.score > 50000 && config.num.score <= 80000) {
                     config.Air.level = 3;
                     $(".level").html("LV.3");
                     config.Air.bulletType = 2;
-                    config.mode[5] = 600;
+                    config.mode[5] = 650;
                 }
-				else if(config.num.score > 800000 && config.num.score <= 1200000) {
+				else if(config.num.score > 80000 && config.num.score <= 120000) {
 					config.Air.level = 4;
 					$(".level").html("LV.4");
 					config.mode[2] = 120;
@@ -287,14 +287,14 @@ let core = {
 	// 战机位置
 	Air: pos => {
 		let Air = game.find($(".Air")),
-			left = pos[0] - Air.width()/2,
+			left = pos[0] - Air.width()/2 + 5,
 			top = pos[1] - Air.height()/2 - 15;
 
 		if(left <= -Air.width()/2){
 			left = -Air.width()/2 + 5;
 		}
 		else if(left >= game.width() - Air.width()/2){
-			left = game.width() - Air.width()/2 - 5;
+			left = game.width() - Air.width()/2 - 15;
 		}
 
 		if(top <= 0){
@@ -835,10 +835,10 @@ let core = {
 
 			// 我方与敌机子弹碰撞
 			for(let d=0; d<k; d++) {
-				let bx2 = Math.abs(parseInt($(".Air").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 12),
+				let bx2 = Math.abs(parseInt($(".Air").css("left")) - parseInt($(".enemyBullet").eq(d).css("left")) + 25),
 					by2 = Math.abs(parseInt($(".Air").css("top")) - parseInt($(".enemyBullet").eq(d).css("top")) + 15);
 
-				if(bx2 <= 14 && by2 <= 20) {
+				if(bx2 <= 18 && by2 <= 20) {
 					if(!config.Air.invincible){
 						config.Air.hp--;
 						core.hp(config.Air.hp);
@@ -925,7 +925,7 @@ let core = {
 		let temp = {
 			name: config.name,
 			score: $(".score").html(),
-			time: new Date().toLocaleString()
+			time: (new Date()).Format("M-d h:m")
 		};
 		result.push(temp);
 		if(result.length > 10){
@@ -973,3 +973,43 @@ let setList = () => {
 		list.append(text);
 	});
 };
+Date.prototype.Format = function(fmt) {
+	var o = {
+		"M+": this.getMonth() + 1,
+		//月份
+		"d+": this.getDate(),
+		//日
+		"h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12,
+		//小时
+		"H+": this.getHours(),
+		//小时
+		"m+": this.getMinutes(),
+		//分
+		"s+": this.getSeconds(),
+		//秒
+		"q+": Math.floor((this.getMonth() + 3) / 3),
+		//季度
+		"S": this.getMilliseconds() //毫秒
+	};
+	var week = {
+		"0": "\u65e5",
+		"1": "\u4e00",
+		"2": "\u4e8c",
+		"3": "\u4e09",
+		"4": "\u56db",
+		"5": "\u4e94",
+		"6": "\u516d"
+	};
+	if (/(y+)/.test(fmt)) {
+		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	}
+	if (/(E+)/.test(fmt)) {
+		fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f": "\u5468") : "") + week[this.getDay() + ""]);
+	}
+	for (var k in o) {
+		if (new RegExp("(" + k + ")").test(fmt)) {
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		}
+	}
+	return fmt;
+}
